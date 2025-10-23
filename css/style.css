@@ -1,0 +1,33 @@
+/* Put this AFTER bootstrap.css or in a custom stylesheet loaded after bootstrap */
+
+/* container is .sidebar to scope and increase specificity */
+.sidebar .nav-link.active-outline {
+  color: #ffffff !important;                /* keep text white */
+  background-color: transparent !important; /* no filled bg */
+  border: 2px solid rgba(13,110,253,1) !important; /* solid primary border */
+  border-radius: .5rem !important;
+  box-shadow: 0 0 12px rgba(13,110,253,0.18) !important; /* glow */
+  font-weight: 700 !important;
+  transition: box-shadow .18s ease, transform .12s ease;
+}
+
+/* small hover nudge */
+.sidebar .nav-link.active-outline:hover {
+  transform: translateY(-1px);
+}
+
+/* Submenu active smaller border */
+.sidebar .collapse .nav-link.active-outline {
+  border-left: 4px solid rgba(13,110,253,1) !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  padding-left: .75rem !important;
+  box-shadow: none !important;
+}
+
+/* Ensure caret icon color also changes when parent active */
+.sidebar .nav-link.active-outline .bi,
+.sidebar .nav-link.active-outline i {
+  color: rgba(13,110,253,1) !important;
+}

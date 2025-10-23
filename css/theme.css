@@ -1,0 +1,123 @@
+/* 🌞 Light mode (default) */
+:root {
+  --bg-color: whitesmoke;
+  --text-color: #212529;
+  --card-bg: #f8f9fa;
+  --card-text: #212529;
+  --navbar-bg: #000000;
+  --list-bg: #ffffff;
+  --list-hover: #f1f1f1;
+}
+
+/* 🌙 Dark mode */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f8f9fa;
+  --card-bg: #1e1e1e;
+  --card-text: #f8f9fa;
+  --navbar-bg: #000000;
+  --list-bg: #1c1c1c;
+  --list-hover: #2a2a2a;
+}
+
+/* Smooth transition for all UI elements */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Base colors */
+body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--navbar-bg) !important;
+}
+
+/* Cards */
+.card {
+  background-color: var(--card-bg) !important;
+  color: var(--card-text) !important;
+}
+
+.btn {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* List Groups */
+.list-group-item {
+  background-color: var(--list-bg) !important;
+  color: var(--text-color) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.list-group-item:hover {
+  background-color: var(--list-hover) !important;
+}
+
+/* Forms and Buttons */
+.form-control {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Placeholder color — visible in both themes */
+[data-theme="light"] .form-control::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================= */
+/* Code Blocks - Theme Aware     */
+/* ============================= */
+
+/* Light mode (default) */
+[data-theme="light"] pre {
+  background-color: #f4f4f4 !important;
+  color: #222 !important;
+  border: 1px solid #ddd !important;
+}
+
+[data-theme="light"] code {
+  color: #222 !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] pre {
+  background-color: #1e1e1e !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #333 !important;
+}
+
+[data-theme="dark"] code {
+  color: #f8f8f2 !important;
+}
+
+/* Buttons inside code block */
+[data-theme="light"] .code-block-wrapper .btn-outline-secondary {
+  border-color: #444;
+  color: #444;
+}
+[data-theme="dark"] .code-block-wrapper .btn-outline-secondary {
+  border-color: #ccc;
+  color: #ccc;
+}
+
+/* Run/Copy button hover effect */
+[data-theme="light"] .code-block-wrapper .btn-outline-secondary:hover,
+[data-theme="light"] .code-block-wrapper .btn-outline-primary:hover {
+  background-color: #ddd;
+}
+
+[data-theme="dark"] .code-block-wrapper .btn-outline-secondary:hover,
+[data-theme="dark"] .code-block-wrapper .btn-outline-primary:hover {
+  background-color: #333;
+}
+
