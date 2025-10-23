@@ -71,11 +71,13 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
 </head>
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="d-flex">
+  <?php include 'sidebar.php'; ?>
+  <div class="flex-grow-1 p-4">
   <div class="card shadow-sm border-0">
     <div class="card-header bg-black text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">✏️ Edit Lesson</h4>
-      <a href="admin.php" class="btn btn-light btn-sm">⬅ Back</a>
+      <h4 class="mb-0">Edit Lesson</h4>
+      <a href="admin.php" class="btn btn-light btn-sm">Back</a>
     </div>
     <div class="card-body">
       <form method="POST">
@@ -130,6 +132,7 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
       </form>
     </div>
   </div>
+</div>
 </div>
 
 <!-- ✅ Toast for Update Success -->
