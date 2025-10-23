@@ -121,3 +121,62 @@ body {
   background-color: #333;
 }
 
+
+/* === Category Nav Hover Effects === */
+.navbar-nav .nav-link {
+  color: #fff !important;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Subtle underline glow on hover */
+.navbar-nav .nav-link:hover {
+  color: #00e5ff !important;
+}
+
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #00e5ff;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 60%;
+}
+
+/* Dropdown hover */
+.dropdown-menu {
+  background-color: #111;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item {
+  color: #ccc;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #222;
+  color: #00e5ff;
+}
+
+/* Logout button hover */
+.btn-outline-light:hover {
+  background-color: #00e5ff;
+  color: #000;
+  border-color: #00e5ff;
+}
+
+/* === Color Coded Category Hover === */
+a.nav-link[href*="HTML"]:hover { color: #F57C00 !important; }
+a.nav-link[href*="CSS"]:hover { color: #5E35B1 !important; }
+a.nav-link[href*="JavaScript"]:hover { color: #FFC400 !important; }
+a.nav-link[href*="PHP"]:hover { color: #01579B !important; }
+a.nav-link[href*="Svelte"]:hover { color: #FF3E00 !important; }

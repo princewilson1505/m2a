@@ -37,6 +37,7 @@ $result = $conn->query("SELECT * FROM lessons");
     <div class="p-4 flex-grow-1">
       <h3>Content Panel</h3>
     <hr>
+    <a class="btn btn-success text-light mb-2" href="add_lesson.php">Add Lesson</a>
     <div class="card rounded shadow">
       <table class="table table-striped mb-0 overflow-auto">
         <thead class="table-dark">
@@ -69,7 +70,6 @@ $result = $conn->query("SELECT * FROM lessons");
           <?php endwhile; ?>
         </tbody>
       </table>
-  <a class="btn btn-success text-light m-5 " href="add_lesson.php">Add Lesson</a>
   </div>
     </div>
     </div>
@@ -133,14 +133,20 @@ $result = $conn->query("SELECT * FROM lessons");
     // Toast logic (PHP controlled)
     document.addEventListener("DOMContentLoaded", function() {
       <?php if ($deleted): ?>
-        const toastEl = document.getElementById('deleteToast');
-        const toast = new bootstrap.Toast(toastEl);
-        toast.show();
+        var toastElId = 'deleteToast';
       <?php elseif ($added): ?>
-        const toastEl = document.getElementById('addToast');
-        const toast = new bootstrap.Toast(toastEl);
-        toast.show();
+        var toastElId = 'addToast';
+      <?php else: ?>
+        var toastElId = '';
       <?php endif; ?>
+
+      if (toastElId) {
+        var tEl = document.getElementById(toastElId);
+        if (tEl) {
+          var toastInstance = new bootstrap.Toast(tEl);
+          toastInstance.show();
+        }
+      }
     });
   </script>
 </body>

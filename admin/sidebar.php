@@ -66,23 +66,11 @@ $menu_groups = [
     </li>
 
     <!-- Users Menu -->
-    <li>
-      <a class="nav-link text-white d-flex justify-content-between align-items-center <?php
-        if (in_array($current_page, $menu_groups['user'])) echo 'active border border-2 border-outline rounded';
-      ?>"
-      data-bs-toggle="collapse" href="#userMenu" role="button"
-      aria-expanded="<?php echo in_array($current_page, $menu_groups['user']) ? 'true' : 'false'; ?>"
-      aria-controls="userMenu">
-        <span><i class="bi bi-people me-2"></i> Users</span>
-        <i class="bi bi-caret-down-fill small"></i>
+    <li class="nav-item">
+      <a href="manage_user.php"
+         class="nav-link text-white <?php if ($current_page == 'manage_user.php') echo 'active border border-2 border-outline rounded'; ?>">
+        <i class="bi bi-person-fill me-2"></i> User
       </a>
-
-      <div class="collapse <?php echo in_array($current_page, $menu_groups['user']) ? 'show' : ''; ?>" id="userMenu">
-        <ul class="nav flex-column ms-4 border-start ps-2">
-          <li><a href="manage_user.php" class="nav-link text-white <?php if ($current_page == 'manage_user.php') echo 'active border border-2 border-primary rounded'; ?>">Manage Users</a></li>
-          <li><a href="add_user.php" class="nav-link text-white <?php if ($current_page == 'add_user.php') echo 'active border border-2 border-primary rounded'; ?>">Add User</a></li>
-        </ul>
-      </div>
     </li>
 
   </ul>

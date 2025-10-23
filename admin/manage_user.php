@@ -125,16 +125,6 @@ $result = $stmt->get_result();
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-black">
-  <div class="container-fluid">
-    <div class="navbar-brand h1 mb-0" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">
-      <i class="bi bi-braces-asterisk text-danger"></i> 
-      <span class="text-light">M3a Administration</span>
-    </div>
-  </div>
-</nav>
-
 <div class="main-container">
   <div class="sidebar">
     <?php include 'sidebar.php'; ?>

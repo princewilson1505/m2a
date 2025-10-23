@@ -64,21 +64,49 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
   <title>Edit Lesson</title>
   <link href="../css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.css">
   <script src="../js/bootstrap.bundle.min.js"></script>
   <style>
-    textarea { resize: vertical; }
-  </style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevent body scroll */
+  }
+
+  .main {
+    height: 100vh; /* Make sidebar + content full height */
+  }
+
+  .flex-grow-1 {
+    height: 100%;
+    overflow-y: auto; /* Scroll only content area */
+    padding: 20px;
+    background-color: #f8f9fa;
+  }
+
+  textarea { resize: vertical; }
+
+  .sticky-save {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    text-align: right;
+    z-index: 10;
+  }
+</style>
 </head>
 <body class="bg-light">
 
-<div class="d-flex">
+<div class="main d-flex">
   <?php include 'sidebar.php'; ?>
   <div class="flex-grow-1 p-4">
-  <div class="card shadow-sm border-0">
-    <div class="card-header bg-black text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">Edit Lesson</h4>
-      <a href="admin.php" class="btn btn-light btn-sm">Back</a>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Edit Lesson</h2>
     </div>
+    <hr>
     <div class="card-body">
       <form method="POST">
         <div class="mb-3">
@@ -121,14 +149,17 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
               <textarea name="code_block[]" class="form-control" rows="5"><?= htmlspecialchars($sec['code_block']) ?></textarea>
             </div>
 
-            <a href="delete_section.php?id=<?= $sec['id'] ?>&lesson=<?= $lesson['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this section?')">🗑️ Delete Section</a>
+            <a href="delete_section.php?id=<?= $sec['id'] ?>&lesson=<?= $lesson['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this section?')"><i class="bi bi-trash"></i> Delete Section</a>
           </div>
         <?php endwhile; ?>
 
         <div id="newSections"></div>
 
-        <button type="button" class="btn btn-secondary mt-3" onclick="addSection()">➕ Add New Section</button>
-        <button type="submit" class="btn btn-success mt-3">💾 Save Changes</button>
+        <button type="button" class="btn btn-success m-3" onclick="addSection()"><i class="bi bi-plus-circle"></i> Add New Section</button>
+
+        <div class="sticky-save p-4">
+        <button type="submit" class="btn btn-primary mt-3"> <i class="bi bi-floppy-fill"></i> Save</button>
+      </div>
       </form>
     </div>
   </div>
@@ -155,7 +186,7 @@ function addSection() {
   const div = document.createElement('div');
   div.classList.add('border', 'rounded', 'p-3', 'mb-3', 'bg-light');
   div.innerHTML = `
-    <h6>🆕 New Section</h6>
+    <h6>New Section</h6>
     <div class="mb-2">
       <label class="form-label">Section Heading</label>
       <input type="text" name="new_heading[]" class="form-control" placeholder="Section title">
