@@ -131,7 +131,7 @@ body {
 
 /* Subtle underline glow on hover */
 .navbar-nav .nav-link:hover {
-  color: #00e5ff !important;
+  color: #0d6efd !important;
 }
 
 .navbar-nav .nav-link::after {
@@ -141,7 +141,7 @@ body {
   left: 50%;
   width: 0;
   height: 2px;
-  background-color: #00e5ff;
+  background-color: #0d6efd;
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
@@ -164,14 +164,14 @@ body {
 
 .dropdown-item:hover {
   background-color: #222;
-  color: #00e5ff;
+  color: #0d6efd;
 }
 
 /* Logout button hover */
 .btn-outline-light:hover {
-  background-color: #00e5ff;
+  background-color: #0d6efd;
   color: #000;
-  border-color: #00e5ff;
+  border-color: #0d6efd;
 }
 
 /* === Color Coded Category Hover === */

@@ -105,6 +105,12 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
   <div class="container">
     <div class="d-flex justify-content-between align-items-center">
       <h2 class="mb-0">Edit Lesson</h2>
+      <div>
+        <!-- Delete lesson button -->
+        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteLessonModal">
+          <i class="bi bi-trash"></i> Delete Lesson
+        </button>
+      </div>
     </div>
     <hr>
     <div class="card-body">
@@ -166,13 +172,33 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
 </div>
 </div>
 
-<!-- ✅ Toast for Update Success -->
+    <!-- Delete confirmation modal for lesson -->
+    <div class="modal fade" id="deleteLessonModal" tabindex="-1" aria-labelledby="deleteLessonLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-warning">
+            <h5 class="modal-title" id="deleteLessonLabel"><i class="bi bi-exclamation-triangle-fill"></i> Confirm Delete</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete the lesson?</p>
+            <p class="fw-bold"><?= htmlspecialchars($lesson['title']) ?></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+            <a href="delete_lesson.php?id=<?= $lesson['id'] ?>" class="btn btn-danger">Yes, delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Toast for Update Success -->
 <?php if (isset($_GET['updated'])): ?>
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="updateToast" class="toast align-items-center text-bg-success border-0 show" role="alert">
       <div class="d-flex">
         <div class="toast-body">
-          ✅ Lesson updated successfully!
+          Lesson updated successfully!
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
