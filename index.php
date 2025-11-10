@@ -24,7 +24,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
         <header class="p-4 text-light shadow-sm row g-0 bg-primary bg-gradient">
             <div class="col-md-8 p-4 container">
             <h2 class="text-center">M2a: Programming Languages Learning Guide</h2>
-            <p class="text-center fs-6">A Learning Education Coding Learning for Upcoming Programmers/IT Students</p>
+            <p class="text-center fs-6">A Learning Education Coding for Upcoming Programmers/IT Students</p>
             </div>
         </header>
         <br>

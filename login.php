@@ -115,12 +115,12 @@ $_SESSION['toast'] = [
   <script src="js/bootstrap.bundle.min.js"></script>
   <script>
     <?php if (!empty($success)): ?>
-      const toastEl = document.getElementById('loginToast');
-      const toast = new bootstrap.Toast(toastEl, { delay: 1500 });
+      var toastEl = document.getElementById('loginToast');
+      var toast = new bootstrap.Toast(toastEl, { delay: 1500 });
       toast.show();
 
       // Redirect after toast disappears
-      setTimeout(() => {
+      setTimeout(function() {
         window.location.href = "<?= $redirect_url ?>";
       }, 1600);
     <?php endif; ?>
@@ -137,9 +137,11 @@ $_SESSION['toast'] = [
     </div>
   </div>
   <script>
-    const toastEl = document.getElementById('liveToast');
-    const toast = new bootstrap.Toast(toastEl);
-    toast.show();
+    var toastEl = document.getElementById('liveToast');
+    if (toastEl) {
+      var toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    }
   </script>
   <?php unset($_SESSION['toast']); ?>
 <?php endif; ?>

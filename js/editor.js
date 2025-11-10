@@ -322,7 +322,8 @@ function runCode() {
             document.getElementById('console').innerHTML = 'Executing PHP code...';
             
             // Send to PHP handler using absolute path
-            fetch('/capstone/php_handler.php', {
+            // send to local php handler in this project
+            fetch('php_handler.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -349,7 +350,7 @@ Troubleshooting steps:<br>
 1. Make sure XAMPP Apache is running (check XAMPP Control Panel)<br>
 2. Try accessing <a href="/capstone/test.php" target="_blank">test.php</a> to verify PHP is working<br>
 3. Check XAMPP error logs for more details<br>
-4. Verify the URL: ${window.location.origin}/capstone/php_handler.php`;
+                4. Verify the URL: ${window.location.origin}/m2a/php_handler.php`;
             });
             break;
             

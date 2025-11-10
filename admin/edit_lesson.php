@@ -192,19 +192,49 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
       </div>
     </div>
 
-    <!-- ✅ Toast for Update Success -->
-<?php if (isset($_GET['updated'])): ?>
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="updateToast" class="toast align-items-center text-bg-success border-0 show" role="alert">
-      <div class="d-flex">
-        <div class="toast-body">
-          Lesson updated successfully!
+    <!-- Toast container (update / delete notifications) -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div id="updateToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">Lesson updated successfully!</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+
+      <div id="sectionDeletedToast" class="toast align-items-center text-bg-success border-0 mt-2" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">Section deleted successfully!</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+
+      <div id="sectionDeleteFailedToast" class="toast align-items-center text-bg-danger border-0 mt-2" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">Failed to delete section.</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
       </div>
     </div>
-  </div>
-<?php endif; ?>
+
+    <script>
+      // Show toasts based on query params
+      document.addEventListener('DOMContentLoaded', function() {
+        <?php if (isset($_GET['updated'])): ?>
+          var t = new bootstrap.Toast(document.getElementById('updateToast'));
+          t.show();
+        <?php endif; ?>
+
+        <?php if (isset($_GET['section_deleted'])): ?>
+          <?php if ($_GET['section_deleted'] == '1'): ?>
+            var t2 = new bootstrap.Toast(document.getElementById('sectionDeletedToast'));
+            t2.show();
+          <?php else: ?>
+            var t3 = new bootstrap.Toast(document.getElementById('sectionDeleteFailedToast'));
+            t3.show();
+          <?php endif; ?>
+        <?php endif; ?>
+      });
+    </script>
 
 <script>
 function addSection() {
