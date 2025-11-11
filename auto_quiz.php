@@ -223,7 +223,10 @@ if (isset($_SESSION['quiz_ids']) && isset($_SESSION['quiz_index'])) {
           <div class="alert <?= $feedback['isCorrect'] ? 'alert-success' : 'alert-danger' ?> mb-4">
             <h5><?= $feedback['isCorrect'] ? '✓ Correct!' : '✗ Incorrect' ?></h5>
             <p><strong>Your answer:</strong> <?= strtoupper($feedback['userAnswer']) ?>. <?= $feedback['options'][$feedback['userAnswer']] ?></p>
-            <p><strong>Correct answer:</strong> <?= strtoupper($feedback['correctAnswer']) ?>. <?= $feedback['options'][$feedback['correctAnswer']] ?></p>
+            <p><strong>Correct answer:</strong> 
+            <?= strtoupper($feedback['correctAnswer']) ?>. 
+            <?= $feedback['options'][strtolower($feedback['correctAnswer'])] ?>
+            </p>
           </div>
         <?php endif; ?>
 

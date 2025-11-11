@@ -229,100 +229,59 @@ function runSvelte(code) {
     iframe.style.display = 'block';
     consoleBox.style.display = 'none';
 
+    // Build iframe content as a Blob (avoids srcdoc escaping issues and accidental </script> termination)
     const encoded = btoa(unescape(encodeURIComponent(code)));
-    iframe.srcdoc = `
-<!DOCTYPE html>
+    const iframeHtml = `<!doctype html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Svelte Output</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-    .error { color: red; padding: 10px; background: #ffe6e6; border-radius: 4px; font-family: monospace; }
-    .loading { color: #666; padding: 20px; text-align: center; }
-</style>
+  <meta charset="utf-8">
+  <title>Svelte Output</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px} .error{color:#a00;background:#ffe6e6;padding:10px;border-radius:4px;font-family:monospace;}</style>
 </head>
 <body>
-<div id="root"></div>
-<script>
-(function(){
-    const root = document.getElementById('root');
+  <div id="root">Loading...</div>
+  <script>
+  (function(){
+    const encoded = '${encoded}';
+    const source = decodeURIComponent(escape(atob(encoded)));
 
     function loadScript(src){
-        return new Promise((resolve, reject) => {
-            const s = document.createElement('script');
-            s.src = src;
-            s.async = true;
-            s.onload = () => resolve();
-            s.onerror = (e) => reject(new Error('Failed to load ' + src));
-            document.head.appendChild(s);
-        });
+      return new Promise((resolve,reject)=>{
+        const s = document.createElement('script'); s.src = src; s.async = true;
+        s.onload = () => resolve(); s.onerror = () => reject(new Error('Failed to load ' + src));
+        document.head.appendChild(s);
+      });
     }
 
-    async function initSvelte() {
-        try {
-            // Try local copy first (same origin) to avoid Edge Tracking Prevention issues
-            const localPath = '/assets/svelte/compiler.js';
-            let loaded = false;
-            try {
-                await loadScript(localPath);
-                loaded = true;
-            } catch (e) {
-                // local not available, try reliable CDN (jsdelivr)
-                try {
-                    await loadScript('https://cdn.jsdelivr.net/npm/svelte@4/compiler.js');
-                    loaded = true;
-                } catch (e2) {
-                    // try unpkg as last resort
-                    try {
-                        await loadScript('https://unpkg.com/svelte@4/compiler.js');
-                        loaded = true;
-                    } catch (e3) {
-                        // give up
-                    }
-                }
-            }
-
-            if (!loaded || typeof svelte === 'undefined') {
-                root.innerHTML = '<div class="error">Could not load Svelte compiler.\n\n' +
-                    'Recommended fix: download the compiler and place it at <code>/assets/svelte/compiler.js</code> to avoid browser Tracking Prevention blocking third-party CDNs.</div>';
-                console.error('Svelte compiler not available (tried local + CDNs)');
-                return;
-            }
-
-            // Get the source code
-            const source = ${JSON.stringify(code)};
-
-            // Compile using Svelte compiler
-            const result = svelte.compile(source, {
-                dev: true,
-                format: 'iife',
-                name: 'App'
-            });
-
-            // Create a function that will return the component
-            const fn = new Function('exports', result.js.code + '; return App;');
-            const exports = {};
-            const App = fn(exports);
-
-            // Clear root and mount
-            root.innerHTML = '';
-            new App({ target: root });
-
-        } catch (err) {
-            root.innerHTML = '<div class="error"><strong>Svelte Error:</strong><br>' +
-                (err.message || err.toString()).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-            console.error('Svelte Error:', err);
+    (async function(){
+      const root = document.getElementById('root');
+      try {
+        // Try local compiler first, then CDNs
+        const candidates = ['/assets/svelte/compiler.js', 'https://cdn.jsdelivr.net/npm/svelte@4/compiler.js', 'https://unpkg.com/svelte@4/compiler.js'];
+        let loaded = false;
+        for (const c of candidates) {
+          try { await loadScript(c); if (typeof svelte !== 'undefined') { loaded = true; break; } } catch(e) { /* ignore */ }
         }
-    }
+        if (!loaded || typeof svelte === 'undefined') throw new Error('Svelte compiler not available (tried local + CDNs)');
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSvelte);
-    } else {
-        initSvelte();
-    }
-})();
-</script>
+        const result = svelte.compile(source, { dev: true, format: 'iife', name: 'App' });
+        const fn = new Function('exports', result.js.code + '; return App;');
+        const App = fn({});
+        root.innerHTML = '';
+        new App({ target: root });
+      } catch (err) {
+        root.innerHTML = '<div class="error"><strong>Svelte Error:</strong><br>' + (err.message || err.toString()).replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+        console.error('Svelte Error:', err);
+      }
+    })();
+  })();
+  </script>
 </body>
 </html>`;
+
+    const blob = new Blob([iframeHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    iframe.src = url;
+    // revoke the blob after it loads to free memory
+    iframe.onload = () => { try { URL.revokeObjectURL(url); } catch(e){} };
 }

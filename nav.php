@@ -44,17 +44,8 @@
             </a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Quizess
-            </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="quizess/quiz_html.php">HTML</a></li>
-            <li><a class="dropdown-item" href="quizess/quiz_css.php">CSS</a></li>
-            <li><a class="dropdown-item" href="quizess/quiz_js.php">JavaScript</a></li>
-            <li><a class="dropdown-item" href="quizess/quiz_php.php">PHP</a></li>
-            <li><a class="dropdown-item" href="quizess/quiz_svelte.php">Svelte <span class="badge bg-success rounded-pill">New</span> </a></li>
-            <li><a class="dropdown-item" href="auto_quiz.php">Auto Quiz</a></li>
-          </ul>
+            <a class="nav-link dropdown-toggle" href="auto_quiz.php">
+              Quizess</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link " href="complier.php" target="_blank" role="button" aria-expanded="false">
@@ -110,7 +101,7 @@
         </ul>
 
 
-      <button class="btn btn-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+      <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
         <!-- Profile Picture -->
                 <?php 
                   $profileImg = $currentUser['profile_img'] ? htmlspecialchars($currentUser['profile_img']) : 'https://via.placeholder.com/100?text=User';

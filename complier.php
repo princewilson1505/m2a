@@ -1,4 +1,8 @@
-<?php require_once __DIR__ . '/config.php'; ?>
+<?php require_once __DIR__ . '/config.php';
+// Check for local Svelte compiler and show a helpful message when missing
+$localCompiler = __DIR__ . '/assets/svelte/compiler.js';
+$showCompilerAlert = !file_exists($localCompiler);
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -36,6 +40,15 @@
         </div>
 
         <div class="card container-fluid shadow-lg bg-light p-4">
+            <?php if (!empty($showCompilerAlert)): ?>
+                <div class="alert alert-warning" role="alert">
+                    <h5 class="alert-heading">Svelte compiler not found locally</h5>
+                    <p>The in-browser Svelte compiler is not available as a local file. Edge's Tracking Prevention may block loading the compiler from third-party CDNs. To ensure Svelte runs reliably in this editor, download the compiler to <code>/assets/svelte/compiler.js</code>.</p>
+                    <hr>
+                    <p class="mb-0"><strong>Quick PowerShell command (run in project root):</strong></p>
+                    <pre class="small">New-Item -ItemType Directory -Force -Path .\assets\svelte\; Invoke-WebRequest 'https://cdn.jsdelivr.net/npm/svelte@4/compiler.js' -OutFile .\assets\svelte\compiler.js</pre>
+                </div>
+            <?php endif; ?>
             <div class="row mb-3">
                 <div class="col">Select Your Language:</div>
                     <select class="form-select" id="languageSelect" onchange="changeLanguage()">
