@@ -2,10 +2,13 @@
 session_start();
 include 'config.php';
 
+$error = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
+    $nickname = trim($_POST['nickname'] ?? '');
 
     // Check if passwords match
     if ($password !== $confirm_password) {
@@ -20,9 +23,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $error = "Username already exists!";
         } else {
+            $profile_img = 'uploads/default.png';
+
+            // Handle file upload if present
+            if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                $upload_dir = __DIR__ . '/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+
+                $file = $_FILES['profile_image'];
+                $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $allowed_exts = ['jpg', 'jpeg', 'png', 'gif'];
+
+                if (in_array($file_ext, $allowed_exts)) {
+                    $new_filename = 'user_' . uniqid() . '.' . $file_ext;
+                    $file_path = $upload_dir . $new_filename;
+
+                    if (move_uploaded_file($file['tmp_name'], $file_path)) {
+                        $profile_img = 'uploads/' . $new_filename;
+                    }
+                }
+            }
+
             // Insert without hashing
-            $stmt = $conn->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, 'user')");
-            $stmt->bind_param("ss", $username, $password);
+            $stmt = $conn->prepare("INSERT INTO users (username, password, nickname, profile_img, role) VALUES (?, ?, ?, ?, 'user')");
+            $stmt->bind_param("ssss", $username, $password, $nickname, $profile_img);
             $stmt->execute();
 
             $_SESSION['toast'] = [
@@ -59,10 +85,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             M2a: Programming Languages Learning Guide
                         </p>
 
-                        <form method="POST" autocomplete="off">
+                        <form method="POST" autocomplete="off" enctype="multipart/form-data">
                             <div class="mb-4 mx-5 d-flex align-items-center">
                                 <i class="bi bi-person me-2"></i>
                                 <input type="text" class="form-control" name="username" placeholder="Username" maxlength="50" required value="<?= htmlspecialchars($username ?? '') ?>">
+                            </div>
+                            <div class="mb-4 mx-5 d-flex align-items-center">
+                                <i class="bi bi-chat-dots me-2"></i>
+                                <input type="text" class="form-control" name="nickname" placeholder="Nickname (optional)" maxlength="100" value="<?= htmlspecialchars($nickname ?? '') ?>">
+                            </div>
+                            <div class="mb-4 mx-5">
+                                <label class="form-label"><i class="bi bi-image"></i> Profile Image (optional)</label>
+                                <input type="file" class="form-control" name="profile_image" accept="image/*">
+                                <small class="text-muted">JPG, PNG, GIF (max 2MB)</small>
                             </div>
                             <div class="mb-4 mx-5 d-flex align-items-center">
                                 <i class="bi bi-lock me-2"></i>

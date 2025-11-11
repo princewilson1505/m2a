@@ -1,7 +1,27 @@
 <link rel="stylesheet" href="css/theme.css">
 <?php
+  // Ensure session is started and determine current user (if any)
+  if (session_status() === PHP_SESSION_NONE) session_start();
+
+  // Include DB connection if not already present so we can fetch user info when available
+  if (!isset($conn) && file_exists(__DIR__ . '/config.php')) {
+    require_once __DIR__ . '/config.php';
+  }
+
   // Detect which category is active (e.g., category.php?cat=HTML)
   $currentCat = isset($_GET['cat']) ? $_GET['cat'] : '';
+
+  $currentUser = null;
+  if (isset($_SESSION['user_id']) && isset($conn)) {
+    $uid = (int) $_SESSION['user_id'];
+    $uStmt = $conn->prepare('SELECT id, username, nickname, profile_img, role FROM users WHERE id = ? LIMIT 1');
+    if ($uStmt) {
+      $uStmt->bind_param('i', $uid);
+      $uStmt->execute();
+      $currentUser = $uStmt->get_result()->fetch_assoc();
+      $uStmt->close();
+    }
+  }
 ?>
 <nav id="navbar-example2" class="navbar navbar-expand-lg fixed-top navbar-dark bg-black">
     <div class="container-fluid">
@@ -33,14 +53,21 @@
             <li><a class="dropdown-item" href="quizess/quiz_js.php">JavaScript</a></li>
             <li><a class="dropdown-item" href="quizess/quiz_php.php">PHP</a></li>
             <li><a class="dropdown-item" href="quizess/quiz_svelte.php">Svelte <span class="badge bg-success rounded-pill">New</span> </a></li>
+            <li><a class="dropdown-item" href="auto_quiz.php">Auto Quiz</a></li>
           </ul>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link " href="complier.php" role="button" aria-expanded="false">
+            <a class="nav-link " href="complier.php" target="_blank" role="button" aria-expanded="false">
               Compiler
             </a>
           </li>
         </ul>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn btn-outline-white border-bottom text-white " data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <i class="bi bi-search"></i> Search...
+        </button>
+
         <ul class="navbar-nav mx-auto mb-lg-0">
           <li class="nav-item">
             <a class="nav-link" href="category.php?cat=HTML">
@@ -81,16 +108,320 @@
             </a>
           </li>
         </ul>
-        <div>
-          <link rel="stylesheet" href="css/theme.css">
-      
-            <?php include 'toggle-theme.html'; ?>
 
-          <script src="js/theme.js"></script>
-        </div>
-      <a type="button" class="btn btn-outline-light py-1" href="logout.php"><small>Log out</small></a>
 
+      <button class="btn btn-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+        <!-- Profile Picture -->
+                <?php 
+                  $profileImg = $currentUser['profile_img'] ? htmlspecialchars($currentUser['profile_img']) : 'https://via.placeholder.com/100?text=User';
+                ?>
+                <img src="<?= $profileImg ?>" class="rounded-circle border border-light" alt="Profile Picture" style="width: 24px; height: 24px; object-fit: cover;">
+        <small><?= htmlspecialchars($currentUser['nickname'] ?: $currentUser['username']) ?></small>
+      </button>
 
       </div>
     </div>
   </nav>
+
+  <!-- Modal with dark mode support -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Search Lessons</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="searchInput" class="form-label">Enter search query:</label>
+                  <input type="text" class="form-control" id="searchInput" placeholder="Search lessons, categories...">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="searchBtn">Search</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end bg-black text-light" tabindex="-1" id="offcanvasRight"  aria-labelledby="offcanvasRightLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body container">
+            <div class="modal-body text-center">
+              <?php if ($currentUser): ?>
+                <!-- Profile Picture -->
+                <?php 
+                  $profileImg = $currentUser['profile_img'] ? htmlspecialchars($currentUser['profile_img']) : 'https://via.placeholder.com/100?text=User';
+                ?>
+                <img src="<?= $profileImg ?>" class="rounded-circle mb-3 border border-light" alt="Profile Picture" style="width: 100px; height: 100px; object-fit: cover;">
+                
+                <!-- Name and Role -->
+                <h5 class="fw-bold mb-1"><?= htmlspecialchars($currentUser['nickname'] ?: $currentUser['username']) ?></h5>
+                <p class="text-info small">@<?= htmlspecialchars($currentUser['username']) ?></p>
+                <p class="text-light"><?= htmlspecialchars(ucfirst($currentUser['role'] ?? 'user')) ?></p>
+
+                <!-- Account Info -->
+                <div class="text-center mx-auto" style="max-width: 300px;">
+                  <p><strong>User ID:</strong> <?= (int)$currentUser['id'] ?></p>
+                </div>
+                
+                <!-- Edit Profile Button -->
+                <a href="profile.php" class="btn container btn-outline-primary mt-2">Edit Profile</a>
+              <?php else: ?>
+                <img src="https://via.placeholder.com/100?text=User" class="rounded-circle mb-3 border" alt="Profile Picture">
+                <h5 class="fw-bold mb-1">Guest</h5>
+                <p class="text-muted">Not signed in</p>
+                <div class="text-start mx-auto" style="max-width: 300px;">
+                  <p><a href="login.php" class="btn btn-sm btn-primary">Sign in</a>
+                  <a href="register.php" class="btn btn-sm btn-outline-light ms-2">Register</a></p>
+                </div>
+              <?php endif; ?>
+            </div>
+
+        <hr>
+            
+              <link rel="stylesheet" href="css/theme.css">
+
+              <?php include 'toggle-theme.html'; ?>
+
+              <script src="js/theme.js"></script>
+
+            <?php if ($currentUser): ?>
+              <a type="button" class="btn btn-outline-light container py-1" href="logout.php"><small>Log out</small></a>
+            <?php endif; ?>
+
+          </div>
+        </div>
+
+<!-- Search functionality script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const exampleModal = document.getElementById('exampleModal');
+
+    if (searchBtn && searchInput) {
+      // Handle Search button click
+      searchBtn.addEventListener('click', function() {
+        // Always get the current input element (may be replaced when showing no-results)
+        const currInput = document.getElementById('searchInput');
+        const query = currInput ? currInput.value.trim() : '';
+
+        if (query === '') {
+          // show in-modal message instead of alert
+          const modalBody = exampleModal.querySelector('.modal-body');
+          modalBody.innerHTML = '<p class="text-muted">Please enter a search query.</p>';
+          // re-add the input field
+          modalBody.insertAdjacentHTML('beforeend', `\n            <div class="mb-3">\n              <label for="searchInput" class="form-label">Enter search query:</label>\n              <input type="text" class="form-control" id="searchInput" placeholder="Search lessons, quizzes...">\n            </div>\n          `);
+          const newInput = document.getElementById('searchInput');
+          if (newInput) newInput.focus();
+          return;
+        }
+
+        // Fetch and display results in modal (AJAX)
+        if (currInput) currInput.disabled = true;
+        searchBtn.disabled = true;
+        searchBtn.innerHTML = 'Searching...';
+
+        // Use absolute path so fetch works from pages in subfolders (admin/...)
+        fetch('/m2a/search.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'q=' + encodeURIComponent(query) + '&format=json'
+        })
+        .then(async response => {
+          const txt = await response.text();
+          let data = null;
+          try {
+            data = JSON.parse(txt || '{}');
+          } catch (e) {
+            // Not JSON — show raw text as error
+            throw new Error(txt || 'Non-JSON response from server');
+          }
+          if (!response.ok) {
+            const err = data.error || 'Search request failed';
+            throw new Error(err);
+          }
+          if (data.success && data.results) {
+            displaySearchResults(data.results);
+          } else {
+            displayNoResults();
+          }
+        })
+        .catch(error => {
+          console.error('Search error:', error);
+          displayError(error.message || 'Error performing search');
+        })
+        .finally(() => {
+          const currInput = document.getElementById('searchInput');
+          if (currInput) currInput.disabled = false;
+          searchBtn.disabled = false;
+          searchBtn.innerHTML = 'Search';
+        });
+      });
+
+      // Allow Enter key to trigger search
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchBtn.click();
+        }
+      });
+    }
+
+    // Display search results in the modal body
+    function displaySearchResults(results) {
+      const modalBody = exampleModal.querySelector('.modal-body');
+      
+      if (results.length === 0) {
+        displayNoResults();
+        return;
+      }
+
+      let html = '<h6>Results:</h6><div class="list-group">';
+      results.forEach(result => {
+        const frag = result.section_id ? '#section-' + result.section_id : '';
+        html += `
+          <a href="lesson.php?id=${result.id}${frag}" class="list-group-item list-group-item-action" data-lesson-id="${result.id}" data-section-id="${result.section_id || ''}">
+            <div class="d-flex w-100 justify-content-between">
+              <h6 class="mb-1">${escapeHtml(result.title)}</h6>
+              <small class="text-muted">${escapeHtml(result.created_at)}</small>
+            </div>
+            <p class="mb-1 text-muted small">${escapeHtml(result.snippet || 'No description')}</p>
+          </a>
+        `;
+      });
+      html += '</div>';
+      html += '<div class="mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" id="clearSearchBtn">Clear & Search Again</button></div>';
+      
+      modalBody.innerHTML = html;
+
+      // Attach clear button handler
+      document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+
+      // Intercept clicks on results when we're already on the target lesson page so we can close the modal and smoothly scroll
+      const anchors = modalBody.querySelectorAll('.list-group-item-action');
+      anchors.forEach(a => {
+        a.addEventListener('click', function (e) {
+          try {
+            const lessonId = String(this.dataset.lessonId || '');
+            const sectionId = this.dataset.sectionId ? String(this.dataset.sectionId) : '';
+            // If current page is a lesson and id matches, prevent navigation and scroll inside the page
+            const curPath = window.location.pathname || '';
+            const curParams = new URLSearchParams(window.location.search || '');
+            const curLessonId = curParams.get('id');
+
+            if (curPath.endsWith('lesson.php') && curLessonId === lessonId && sectionId) {
+              e.preventDefault();
+              // hide modal
+              const bsModal = bootstrap.Modal.getInstance(exampleModal) || new bootstrap.Modal(exampleModal);
+              bsModal.hide();
+
+              // scroll the lesson content area to the target element, accounting for navbar height
+              setTimeout(() => {
+                const targetId = 'section-' + sectionId;
+                const el = document.getElementById(targetId);
+                const navbar = document.querySelector('nav.navbar');
+                const navbarHeight = navbar ? navbar.offsetHeight : 60;
+                const container = document.querySelector('.col-lg-8.offset-lg-1') || document.querySelector('.content-area');
+                
+                if (el && container) {
+                  const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - navbarHeight - 20;
+                  container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                } else if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 150);
+            }
+          } catch (err) {
+            // let default behavior happen on error
+            console.error(err);
+          }
+        });
+      });
+    }
+
+    // Display no results message
+    function displayNoResults() {
+      const modalBody = exampleModal.querySelector('.modal-body');
+      modalBody.innerHTML = `
+        <p class="mb-3">No results found for your search.</p>
+        <div class="mb-3">
+          <label for="searchInput" class="form-label">Try another search:</label>
+          <input type="text" class="form-control" id="searchInput" placeholder="Search lessons, categories...">
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="clearSearchBtn">Clear & Search Again</button>
+      `;
+      
+      // Re-attach event listeners
+      const newSearchInput = document.getElementById('searchInput');
+      newSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchBtn.click();
+        }
+      });
+      document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+    }
+
+    // Display error message
+    function displayError(message) {
+      const modalBody = exampleModal.querySelector('.modal-body');
+      modalBody.innerHTML = `
+        <div class="alert alert-danger mb-3">
+          <strong>Error:</strong> ${escapeHtml(message)}
+        </div>
+        <div class="mb-3">
+          <label for="searchInput" class="form-label">Try your search again:</label>
+          <input type="text" class="form-control" id="searchInput" placeholder="Search lessons, categories...">
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="clearSearchBtn">Clear & Search Again</button>
+      `;
+      
+      // Re-attach event listeners
+      const newSearchInput = document.getElementById('searchInput');
+      newSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchBtn.click();
+        }
+      });
+      document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+    }
+
+    // Clear search and show input again
+    function clearSearch() {
+      const modalBody = exampleModal.querySelector('.modal-body');
+      modalBody.innerHTML = `
+        <div class="mb-3">
+          <label for="searchInput" class="form-label">Enter search query:</label>
+          <input type="text" class="form-control" id="searchInput" placeholder="Search lessons, categories...">
+        </div>
+      `;
+      
+      // Re-attach event listeners to new input
+      const newSearchInput = document.getElementById('searchInput');
+      newSearchInput.focus();
+      newSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchBtn.click();
+        }
+      });
+    }
+
+    // Helper to escape HTML
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+  });
+</script>

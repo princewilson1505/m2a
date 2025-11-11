@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($password === $user['password']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['nickname'] = $user['nickname'];
+            $_SESSION['profile_img'] = $user['profile_img'];
             $_SESSION['role'] = $user['role'];
 
             // Set success message for toast

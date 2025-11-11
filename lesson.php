@@ -168,11 +168,11 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
       </div>
 
       <!-- Lesson Content -->
-      <div class="col-lg-8 offset-lg-1 shadow-lg p-4" style="height:93vh; overflow-y:auto; border-radius:10px;">
+      <div class="col-lg-8 offset-lg-1 shadow-lg p-4" style="height:93.5vh; overflow-y:auto; border-radius:10px;">
         <h1><?= htmlspecialchars($lesson['title']) ?></h1>
         <hr>
         <?php while ($s = $sections->fetch_assoc()): ?>
-          <section>
+          <section id="section-<?= $s['id'] ?>">
             <?php if ($s['heading']): ?>
               <h4><?= htmlspecialchars($s['heading']) ?></h4>
             <?php endif; ?>
@@ -272,6 +272,41 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
       setTimeout(() => btn.textContent = 'Copy', 1200);
     });
   }
+  </script>
+
+  <script>
+  // If page loaded with a hash (e.g., #section-123), scroll the lesson content container to show it
+  // Account for fixed navbar height so the section isn't hidden behind it
+  document.addEventListener('DOMContentLoaded', function () {
+    try {
+      if (window.location.hash) {
+        var targetId = window.location.hash.substring(1);
+        var el = document.getElementById(targetId);
+        if (el) {
+          // Get navbar height to offset scroll
+          var navbar = document.querySelector('nav.navbar');
+          var navbarHeight = navbar ? navbar.offsetHeight : 60;
+          
+          var container = document.querySelector('.col-lg-8.offset-lg-1') || document.querySelector('.content-area') || window;
+          if (container && container !== window) {
+            // Scroll the inner container (lesson content area)
+            setTimeout(function() {
+              var top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - navbarHeight - 20;
+              container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+            }, 50);
+          } else {
+            // Fallback: scroll the window, accounting for navbar
+            setTimeout(function() {
+              var top = el.getBoundingClientRect().top + window.scrollY - navbarHeight - 20;
+              window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+            }, 50);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Scroll to hash failed', e);
+    }
+  });
   </script>
 </body>
 </html>

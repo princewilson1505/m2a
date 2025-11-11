@@ -31,22 +31,11 @@
         </style>
     </head>
     <body>
-        <nav id="navbar-example2" class="navbar navbar-expand-lg navbar-dark bg-black">
-    <div class="container-fluid">
-      <div class="navbar-brand h1 mb-0" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">
-        <i class="bi bi-braces-asterisk"></i> <span class="text-danger">M3a</span>
-      </div>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCompilers" aria-controls="navbarCompilers" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
-  </nav>
-
         <div class="title container">
-            <h1 class="p-4" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">M3a Compiler</h1>
+            <h1 class="p-2" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">M2a Compiler</h1>
         </div>
 
-        <div class="card container shadow-lg bg-light p-4">
+        <div class="card container-fluid shadow-lg bg-light p-4">
             <div class="row mb-3">
                 <div class="col">Select Your Language:</div>
                     <select class="form-select" id="languageSelect" onchange="changeLanguage()">
@@ -54,7 +43,7 @@
                         <option value="css">CSS</option>
                         <option value="javascript">JavaScript</option>
                         <option value="php">PHP</option>
-                        <option value="svelte" disabled>Svelte</option>
+                        <option value="svelte">Svelte</option>
                     </select>
                 </div>
                 <div class="col-auto">
