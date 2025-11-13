@@ -74,7 +74,7 @@ while ($row = $result->fetch_assoc()) {
     }
 
     // Trim snippet to 200 chars
-    $snippet = mb_substr(strip_tags($snippet), 0, 200);
+    $snippet = mb_substr(strip_tags($snippet), 0, 50);
 
     $results[] = [
         'id' => (int)$row['id'],

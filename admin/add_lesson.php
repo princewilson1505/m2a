@@ -37,35 +37,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="bg-light">
   <div class="d-flex">
     <?php include 'sidebar.php';?>
-  <div class="flex-grow-1 p-4">
-    <h2>Add New Lesson</h2>
-    <hr>
-    <form method="POST">
-      <div class="mb-3">
-        <label class="form-label fw-bold">Title:</label>
-        <input type="text" class="form-control" name="title" placeholder="Enter lesson title" required>
-      </div>
+    
+    <!-- ✅ Make this main content scrollable -->
+    <div class="flex-grow-1 p-4" style="max-height: 100vh; overflow-y: auto;">
+      <h2>Add New Lesson</h2>
+      <hr>
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-bold">Title:</label>
+          <input type="text" class="form-control" name="title" placeholder="Enter lesson title" required>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-bold">Category:</label>
-        <select class="form-select" name="category" required>
-          <option value="">--Select Category--</option>
-          <option value="HTML">HTML</option>
-          <option value="CSS">CSS</option>
-          <option value="JavaScript">JavaScript</option>
-          <option value="PHP">PHP</option>
-          <option value="Svelte">Svelte</option>
-        </select>
-      </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Category:</label>
+          <select class="form-select" name="category" required>
+            <option value="">--Select Category--</option>
+            <option value="HTML">HTML</option>
+            <option value="CSS">CSS</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="PHP">PHP</option>
+            <option value="Svelte">Svelte</option>
+          </select>
+        </div>
 
-      <h4>Lesson Sections:</h4>
-      <div id="sections" class="mb-3"></div>
-      <button type="button" class="btn btn-outline-primary mb-3" onclick="addSection()">+ Add Section</button><br>
+        <h4>Lesson Sections:</h4>
+        <div id="sections" class="mb-3"></div>
+        <button type="button" class="btn btn-outline-primary mb-3" onclick="addSection()">+ Add Section</button><br>
 
-      <button type="submit" class="btn btn-success"><i class="bi bi-bookmark"></i> Save</button>
-      <a href="manage_lesson.php" class="btn btn-secondary">Back to Manage</a>
-    </form>
-  </div>
+        <button type="submit" class="btn btn-success"><i class="bi bi-bookmark"></i> Save</button>
+        <a href="manage_lesson.php" class="btn btn-secondary">Back to Manage</a>
+      </form>
+    </div>
   </div>
 
   <script>

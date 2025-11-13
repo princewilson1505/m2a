@@ -56,7 +56,7 @@ $showCompilerAlert = !file_exists($localCompiler);
                         <option value="css">CSS</option>
                         <option value="javascript">JavaScript</option>
                         <option value="php">PHP</option>
-                        <option value="svelte">Svelte</option>
+                        <!--<option value="svelte">Svelte</option>-->
                     </select>
                 </div>
                 <div class="col-auto">

@@ -73,6 +73,13 @@ $menu_groups = [
       </a>
     </li>
 
+    <li class="nav-item">
+      <a href="messages.php"
+         class="nav-link text-white <?php if ($current_page == 'messages.php') echo 'active border border-2 border-outline rounded'; ?>">
+        <i class="bi bi-envelope-fill me-2"></i> Messages
+      </a>
+    </li>
+
   </ul>
 
   <hr class="border-secondary">
