@@ -125,7 +125,7 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
   </style>
 </head>
 
-<body data-theme="light">
+<body>
   <?php include 'nav.php'; ?>
 
   <!-- Mobile Sidebar Toggle -->
@@ -159,8 +159,7 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
           <ul class="list-unstyled mx-2">
              <?php while ($row = $result->fetch_assoc()): ?>
                <?php $isActive = ($row['id'] == $id); ?> 
-               <li class="mb-1"> <a href="lesson.php?id=<?= $row['id'] ?>" class="btn btn-sm <?= $isActive ? 'btn-primary' : 'btn-outline-light' ?> w-100 text-start" aria-current="
-               <?= $isActive ? 'page' : 'false' ?>"> <?= htmlspecialchars($row['title']) ?> 
+               <li class="mb-1"> <a href="lesson.php?id=<?= $row['id'] ?>" class="btn btn-sm <?= $isActive ? 'btn-primary' : 'btn-outline-light' ?> w-100 text-start" aria-current="<?= $isActive ? 'page' : 'false' ?>"> <?= htmlspecialchars($row['title']) ?> 
               </a> </li> <?php endwhile; ?> 
             </ul> <?php else: ?> 
               <p>No lessons available for this category yet.</p>
@@ -168,7 +167,7 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
       </div>
 
       <!-- Lesson Content -->
-      <div class="col-lg-8 offset-lg-1 shadow-lg p-4" style="height:93.5vh; overflow-y:auto; border-radius:10px;">
+      <div class="col-lg-8 offset-lg-1 shadow-lg p-4" data-theme="light" style="height:93.5vh; overflow-y:auto; border-radius:10px;">
         <h1><?= htmlspecialchars($lesson['title']) ?></h1>
         <hr>
         <?php while ($s = $sections->fetch_assoc()): ?>
@@ -221,7 +220,7 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-php.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-php.min.js"></script>
 
   <script>
   // Sidebar toggle for mobile
@@ -233,31 +232,67 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
     overlay.style.display = isOpen ? 'none' : 'block';
   }
 
-  // Run code
+  // -------------------------
+  // ✅ FIXED RUN CODE FUNCTION
+  // -------------------------
   function runCode(id) {
-  const codeEl = document.getElementById('codeblock-' + id);
-  const iframe = document.getElementById('output' + id);
-  const code = codeEl.textContent;
-  const category = codeEl.className.toLowerCase();
+    const codeEl = document.getElementById('codeblock-' + id);
+    const iframe = document.getElementById('output' + id);
+    const code = codeEl.textContent.trim();
 
-  // For HTML, CSS, JS — run locally
-  if (category.includes('html') || category.includes('css') || category.includes('javascript')) {
-    iframe.srcdoc = code;
-    return;
-  }
+    const type = codeEl.className
+      .replace("language-", "")
+      .split(" ")[0]
+      .trim()
+      .toLowerCase();
 
-  // For PHP — send code to backend
-  if (category.includes('php')) {
-    iframe.src = 'about:blank';
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'run_php.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function () {
-      iframe.srcdoc = `<pre style="padding:10px;">${this.responseText}</pre>`;
-    };
-    xhr.send('code=' + encodeURIComponent(code));
+    if (type === "html") {
+      iframe.srcdoc = code;
+      return;
+    }
+
+    if (type === "css") {
+      iframe.srcdoc = `<style>${code}</style>`;
+      return;
+    }
+
+    if (type === "javascript" || type === "js") {
+      iframe.srcdoc = `
+        <html>
+        <body></body>
+        <script>
+          try { ${code} }
+          catch(e){ document.body.innerHTML = "<pre style='color:red;'>" + e + "</pre>"; }
+        <\/script>
+         <pre id="console" style="background:#000;color:#0f0;padding:10px;"></pre>
+        <script>
+        const log = (...msg) => {
+          document.getElementById("console").innerHTML += msg.join(" ") + "\\n";
+        };
+        console.log = log;
+        
+        try {
+          ${code}
+        } catch(e){
+          log("Error:", e);
+        }
+      <\/script>
+        </html>
+      `;
+      return;
+    }
+
+    if (type === "php") {
+      iframe.src = 'about:blank';
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'run_php.php', true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function () {
+        iframe.srcdoc = `<pre style="padding:10px;">${this.responseText}</pre>`;
+      };
+      xhr.send("code=" + encodeURIComponent(code));
+    }
   }
-}
 
   // Copy code
   function copyCode(id, btn) {
@@ -275,27 +310,23 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
   </script>
 
   <script>
-  // If page loaded with a hash (e.g., #section-123), scroll the lesson content container to show it
-  // Account for fixed navbar height so the section isn't hidden behind it
+  // Scroll to hash
   document.addEventListener('DOMContentLoaded', function () {
     try {
       if (window.location.hash) {
         var targetId = window.location.hash.substring(1);
         var el = document.getElementById(targetId);
         if (el) {
-          // Get navbar height to offset scroll
           var navbar = document.querySelector('nav.navbar');
           var navbarHeight = navbar ? navbar.offsetHeight : 60;
           
           var container = document.querySelector('.col-lg-8.offset-lg-1') || document.querySelector('.content-area') || window;
           if (container && container !== window) {
-            // Scroll the inner container (lesson content area)
             setTimeout(function() {
               var top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - navbarHeight - 20;
               container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
             }, 50);
           } else {
-            // Fallback: scroll the window, accounting for navbar
             setTimeout(function() {
               var top = el.getBoundingClientRect().top + window.scrollY - navbarHeight - 20;
               window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });

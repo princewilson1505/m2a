@@ -21,8 +21,10 @@ if ($q === '') {
     exit;
 }
 
-// Sanitize and prepare search term
-$searchTerm = '%' . $conn->real_escape_string($q) . '%';
+// Prepare search terms for different match strengths
+$exactTerm = $q;
+$prefixTerm = $q . '%';
+$searchTerm = '%' . $q . '%';
 
 // Search lessons and any matching sections (heading/content/code_block).
 // We use a correlated subquery to pull a single matching section snippet per lesson when available.
@@ -38,7 +40,16 @@ FROM lessons l
 WHERE l.title LIKE ? OR l.category LIKE ? OR EXISTS (
   SELECT 1 FROM lesson_sections s WHERE s.lesson_id = l.id AND (s.heading LIKE ? OR s.content LIKE ? OR s.code_block LIKE ?)
 )
-ORDER BY l.date_created DESC
+ORDER BY
+    CASE
+        WHEN LOWER(l.title) = LOWER(?) THEN 0
+        WHEN LOWER(l.title) LIKE LOWER(?) THEN 1
+        WHEN LOWER(l.title) LIKE LOWER(?) THEN 2
+        WHEN LOWER(l.category) = LOWER(?) THEN 3
+        WHEN snippet_with_id IS NOT NULL THEN 4
+        ELSE 5
+    END,
+    l.date_created DESC
 LIMIT 20
 ";
 
@@ -49,8 +60,14 @@ if (!$stmt) {
     exit;
 }
 
-// Bind parameters: snippet subquery (3), title & category (2), exists subquery (3) => total 8
-$stmt->bind_param('ssssssss', $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm);
+// Bind parameters: snippet subquery (3), title & category (2), exists subquery (3), ordering weights (4) => total 12
+$stmt->bind_param(
+    'ssssssssssss',
+    $searchTerm, $searchTerm, $searchTerm, // snippet subquery
+    $searchTerm, $searchTerm,             // title/category LIKE
+    $searchTerm, $searchTerm, $searchTerm, // exists subquery
+    $exactTerm, $prefixTerm, $searchTerm, $exactTerm // ordering weights
+);
 $stmt->execute();
 $result = $stmt->get_result();
 

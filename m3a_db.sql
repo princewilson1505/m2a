@@ -152,6 +152,21 @@ CREATE TABLE `quiz_categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Table structure for table `quiz_scores`
+--
+
+CREATE TABLE `quiz_scores` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
+  `category_label` varchar(100) NOT NULL,
+  `total_questions` int(11) NOT NULL,
+  `correct_answers` int(11) NOT NULL,
+  `percentage` decimal(6,2) NOT NULL,
+  `taken_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Dumping data for table `quiz_categories`
 --
 
@@ -218,6 +233,15 @@ ALTER TABLE `quiz_categories`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `quiz_scores`
+--
+ALTER TABLE `quiz_scores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `qs_user_idx` (`user_id`),
+  ADD KEY `qs_category_idx` (`category_id`),
+  ADD KEY `qs_taken_idx` (`taken_at`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -250,6 +274,12 @@ ALTER TABLE `quizzes`
 --
 ALTER TABLE `quiz_categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `quiz_scores`
+--
+ALTER TABLE `quiz_scores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`

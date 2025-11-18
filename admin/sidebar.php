@@ -80,11 +80,18 @@ $menu_groups = [
       </a>
     </li>
 
+    <li class="nav-item">
+      <a href="score_records.php"
+         class="nav-link text-white <?php if ($current_page == 'score_records.php') echo 'active border border-2 border-outline rounded'; ?>">
+        <i class="bi bi-clipboard-data me-2"></i> Score Records
+      </a>
+    </li>
+
   </ul>
 
   <hr class="border-secondary">
   <div>
-    <a href="../logout.php" class="btn btn-outline-light w-100">
+    <a href="logout.php" class="btn btn-outline-light w-100">
       <i class="bi bi-box-arrow-right"></i> Logout
     </a>
   </div>

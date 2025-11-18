@@ -63,66 +63,38 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
   <meta charset="UTF-8">
   <title>Edit Lesson</title>
   <link href="../css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../css/admin.css">
   <script src="../js/bootstrap.bundle.min.js"></script>
-  <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden; /* Prevent body scroll */
-  }
-
-  .main {
-    height: 100vh; /* Make sidebar + content full height */
-  }
-
-  .flex-grow-1 {
-    height: 100%;
-    overflow-y: auto; /* Scroll only content area */
-    padding: 20px;
-    background-color: #f8f9fa;
-  }
-
-  textarea { resize: vertical; }
-
-  .sticky-save {
-    position: sticky;
-    bottom: 0;
-    background: #fff;
-    padding: 10px 0;
-    border-top: 1px solid #ddd;
-    text-align: right;
-    z-index: 10;
-  }
-</style>
 </head>
-<body class="bg-light">
+<body class="admin-page">
 
-<div class="main d-flex">
+<div class="d-flex admin-shell">
   <?php include 'sidebar.php'; ?>
-  <div class="flex-grow-1 p-4">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center">
-      <h2 class="mb-0">Edit Lesson</h2>
-      <div>
+  <div class="flex-grow-1 p-4" style="max-height:100vh;overflow-y:auto;">
+    <div class="admin-hero text-white p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2 class="mb-1 fw-bold">Edit Lesson</h2>
+          <p class="mb-0">Update lesson content, reorder sections, and manage code snippets.</p>
+        </div>
         <!-- Delete lesson button -->
-        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteLessonModal">
+        <button type="button" class="btn btn-light admin-quick-action" data-bs-toggle="modal" data-bs-target="#deleteLessonModal">
           <i class="bi bi-trash"></i> Delete Lesson
         </button>
       </div>
     </div>
-    <hr>
-    <div class="card-body">
-      <form method="POST">
+
+    <div class="admin-card p-4">
+      <form method="POST" class="admin-form">
         <div class="mb-3">
           <label class="form-label">Lesson Title</label>
-          <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($lesson['title']) ?>" required>
+          <input type="text" name="title" class="form-control admin-pill-input" value="<?= htmlspecialchars($lesson['title']) ?>" required>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Category</label>
-          <select name="category" class="form-select" required>
+          <select name="category" class="form-select admin-pill-input" required>
             <?php
             $categories = ['HTML', 'CSS', 'JavaScript', 'PHP', 'Svelte'];
             foreach ($categories as $cat) {
@@ -137,7 +109,7 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
         <hr>
 
         <?php while ($sec = $sections->fetch_assoc()): ?>
-          <div class="border rounded p-3 mb-3 bg-light">
+          <div class="border rounded-4 p-3 mb-3 bg-light shadow-sm">
             <input type="hidden" name="section_id[]" value="<?= $sec['id'] ?>">
 
             <div class="mb-2">
@@ -163,13 +135,12 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
 
         <button type="button" class="btn btn-success m-3" onclick="addSection()"><i class="bi bi-plus-circle"></i> Add New Section</button>
 
-        <div class="sticky-save p-4">
-        <button type="submit" class="btn btn-primary mt-3"> <i class="bi bi-floppy-fill"></i> Save</button>
+        <div class="text-end mt-4">
+        <button type="submit" class="btn admin-gradient-btn mt-3"> <i class="bi bi-floppy-fill me-2"></i>Save Changes</button>
       </div>
       </form>
     </div>
   </div>
-</div>
 </div>
 
     <!-- Delete confirmation modal for lesson -->
@@ -194,21 +165,21 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
 
     <!-- Toast container (update / delete notifications) -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-      <div id="updateToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
+      <div id="updateToast" class="toast admin-toast align-items-center text-bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body">Lesson updated successfully!</div>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
       </div>
 
-      <div id="sectionDeletedToast" class="toast align-items-center text-bg-success border-0 mt-2" role="alert" aria-live="polite" aria-atomic="true">
+      <div id="sectionDeletedToast" class="toast admin-toast align-items-center text-bg-success border-0 mt-2" role="alert" aria-live="polite" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body">Section deleted successfully!</div>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
       </div>
 
-      <div id="sectionDeleteFailedToast" class="toast align-items-center text-bg-danger border-0 mt-2" role="alert" aria-live="polite" aria-atomic="true">
+      <div id="sectionDeleteFailedToast" class="toast admin-toast align-items-center text-bg-danger border-0 mt-2" role="alert" aria-live="polite" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body">Failed to delete section.</div>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -240,7 +211,7 @@ $sections = $conn->query("SELECT * FROM lesson_sections WHERE lesson_id=$id ORDE
 function addSection() {
   const container = document.getElementById('newSections');
   const div = document.createElement('div');
-  div.classList.add('border', 'rounded', 'p-3', 'mb-3', 'bg-light');
+  div.classList.add('border', 'rounded-4', 'p-3', 'mb-3', 'bg-light', 'shadow-sm');
   div.innerHTML = `
     <h6>New Section</h6>
     <div class="mb-2">

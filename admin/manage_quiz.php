@@ -27,22 +27,27 @@ $quizzes = $conn->query("
 <head>
   <meta charset="UTF-8">
   <title>Manage Quizzes</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body class="bg-light d-flex">
+<body class="admin-page d-flex">
 
 <?php include 'sidebar.php'; ?>
 
-<div class="container-fluid p-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Manage Quizzes</h2>
+<div class="container-fluid p-4" style="max-height:100vh;overflow-y:auto;">
+  <div class="admin-hero text-white p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+      <h2 class="mb-1 fw-bold">Quiz Bank</h2>
+      <p class="mb-0">Oversee every quiz question and keep assessments fresh.</p>
+    </div>
+    <a href="add_quiz.php" class="btn btn-light admin-quick-action"><i class="bi bi-plus-circle me-1"></i>Add Quiz</a>
   </div>
 
-  <div class="card">
+  <div class="admin-card admin-card-hover">
     <div class="card-body table-responsive">
-      <table class="table table-bordered table-striped align-middle">
-        <thead class="table-light">
+      <table class="table table-hover align-middle">
+        <thead>
           <tr>
             <th>ID</th>
             <th>Category</th>
@@ -71,7 +76,6 @@ $quizzes = $conn->query("
           <?php endif; ?>
         </tbody>
       </table>
-      <a href="add_quiz.php" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Quiz</a>
     </div>
   </div>
 </div>
@@ -79,7 +83,7 @@ $quizzes = $conn->query("
 <!-- Toast -->
 <?php if ($toast_message): ?>
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-  <div id="liveToast" class="toast align-items-center text-bg-success border-0 show" role="alert">
+  <div id="liveToast" class="toast admin-toast align-items-center text-bg-success border-0 show" role="alert">
     <div class="d-flex">
       <div class="toast-body"><?= htmlspecialchars($toast_message) ?></div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -88,6 +92,6 @@ $quizzes = $conn->query("
 </div>
 <?php endif; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

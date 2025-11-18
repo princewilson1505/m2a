@@ -33,7 +33,7 @@ if (isset($_POST['add_user'])) {
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $conn->query("DELETE FROM users WHERE id=$id");
-    header("Location: manage_users.php");
+    header("Location: manage_user.php");
     exit;
 }
 
@@ -78,108 +78,59 @@ $result = $stmt->get_result();
   <title>Manage Users</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.css">
-  <style>
-    body {
-      background-color: #f8f9fa;
-      overflow: hidden; /* prevent double scrollbars */
-    }
-
-    .main-container {
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .sidebar {
-      width: 250px;
-      background-color: #111;
-      color: white;
-      overflow-y: auto;
-    }
-
-    .content-area {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    table th, table td {
-      vertical-align: middle !important;
-    }
-
-    .table-responsive {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .card {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-  </style>
+  <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
+<body class="admin-page">
 
-<div class="main-container">
-  <div class="sidebar">
-    <?php include 'sidebar.php'; ?>
-  </div>
+<div class="d-flex admin-shell">
+  <?php include 'sidebar.php'; ?>
 
-  <div class="content-area">
-    <div class="container-fluid">
-      <h4 class="mb-3"><i class="bi bi-people"></i> Manage Users</h4>
-      <?php if (isset($msg)) echo $msg; ?>
+  <div class="flex-grow-1 p-4" style="max-height:100vh;overflow-y:auto;">
+    <div class="admin-hero text-white p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h2 class="mb-1 fw-bold"><i class="bi bi-people me-2"></i>User Directory</h2>
+        <p class="mb-0">Manage credentials and roles for every learner and admin.</p>
+      </div>
+      <form method="GET" class="d-flex gap-2">
+        <input type="text" name="search" class="form-control admin-pill-input" placeholder="Search user or role..." value="<?= htmlspecialchars($search) ?>">
+        <button class="btn btn-light admin-quick-action" type="submit"><i class="bi bi-search me-1"></i>Search</button>
+      </form>
+    </div>
+      <?php if (isset($msg)) echo "<div class='admin-card p-3 mb-3'>$msg</div>"; ?>
 
       <!-- ✅ Add User -->
-      <div class="card mb-4">
-        <div class="card-header bg-dark text-white">Add New User</div>
-        <div class="card-body">
-          <form method="POST">
-            <div class="row g-2">
-              <div class="col-md-3">
-                <input type="text" name="username" class="form-control" placeholder="Username" required>
-              </div>
-              <div class="col-md-3">
-                <input type="text" name="password" class="form-control" placeholder="Password" required>
-              </div>
-              <div class="col-md-3">
-                <select name="role" class="form-select">
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <button name="add_user" class="btn btn-danger w-100">Add User</button>
-              </div>
+      <div class="admin-card admin-card-hover p-4 mb-4">
+        <h5 class="mb-3 text-primary">Add New User</h5>
+        <form method="POST">
+          <div class="row g-2">
+            <div class="col-md-3">
+              <input type="text" name="username" class="form-control admin-pill-input" placeholder="Username" required>
             </div>
-          </form>
-        </div>
+            <div class="col-md-3">
+              <input type="text" name="password" class="form-control admin-pill-input" placeholder="Password" required>
+            </div>
+            <div class="col-md-3">
+              <select name="role" class="form-select admin-pill-input">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <button name="add_user" class="btn admin-gradient-btn w-100">Add User</button>
+            </div>
+          </div>
+        </form>
       </div>
 
-      <!-- ✅ Search -->
-      <form method="GET" class="mb-3">
-        <div class="input-group" style="max-width:400px;">
-          <input type="text" name="search" class="form-control" placeholder="Search user or role..." value="<?= htmlspecialchars($search) ?>">
-          <button class="btn btn-outline-danger" type="submit"><i class="bi bi-search"></i></button>
-        </div>
-      </form>
-
       <!-- ✅ User List -->
-      <div class="card mb-3">
-        <div class="card-header bg-dark text-white">User List</div>
-        <div class="card-body table-responsive">
-          <table class="table table-bordered align-middle text-center">
-            <thead class="table-dark">
+      <div class="admin-card p-3 mb-3">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center">
+            <thead>
               <tr>
                 <th>ID</th>
                 <th>Username</th>
                 <th>Password</th>
-                <th>Role</th>
                 <th width="120">Actions</th>
               </tr>
             </thead>
@@ -190,10 +141,9 @@ $result = $stmt->get_result();
                     <td><?= $row['id'] ?></td>
                     <td><?= htmlspecialchars($row['username']) ?></td>
                     <td><?= htmlspecialchars($row['password']) ?></td>
-                    <td><?= htmlspecialchars($row['role']) ?></td>
                     <td>
-                      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit<?= $row['id'] ?>"><i class="bi bi-pencil"></i></button>
-                      <a href="?delete=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?')"><i class="bi bi-trash"></i></a>
+                      <button class="btn btn-sm btn-outline-primary admin-quick-action" data-bs-toggle="modal" data-bs-target="#edit<?= $row['id'] ?>"><i class="bi bi-pencil"></i></button>
+                      <a href="?delete=<?= $row['id'] ?>" class="btn btn-sm btn-outline-danger admin-quick-action" onclick="return confirm('Delete this user?')"><i class="bi bi-trash"></i></a>
                     </td>
                   </tr>
 
@@ -210,22 +160,22 @@ $result = $stmt->get_result();
                             <input type="hidden" name="id" value="<?= $row['id'] ?>">
                             <div class="mb-3">
                               <label>Username</label>
-                              <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($row['username']) ?>" required>
+                              <input type="text" name="username" class="form-control admin-pill-input" value="<?= htmlspecialchars($row['username']) ?>" required>
                             </div>
                             <div class="mb-3">
                               <label>Password</label>
-                              <input type="text" name="password" class="form-control" value="<?= htmlspecialchars($row['password']) ?>" required>
+                              <input type="text" name="password" class="form-control admin-pill-input" value="<?= htmlspecialchars($row['password']) ?>" required>
                             </div>
                             <div class="mb-3">
                               <label>Role</label>
-                              <select name="role" class="form-select">
+                              <select name="role" class="form-select admin-pill-input">
                                 <option value="user" <?= $row['role'] == 'user' ? 'selected' : '' ?>>User</option>
                                 <option value="admin" <?= $row['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
                               </select>
                             </div>
                           </div>
                           <div class="modal-footer">
-                            <button type="submit" name="update_user" class="btn btn-success">Save Changes</button>
+                            <button type="submit" name="update_user" class="btn admin-gradient-btn">Save Changes</button>
                           </div>
                         </form>
                       </div>

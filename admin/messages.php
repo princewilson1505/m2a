@@ -26,27 +26,31 @@ $result = $conn->query("SELECT * FROM contact_form ORDER BY submitted_at DESC");
   <title>Messages | Admin</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.min.css">
-  <style>
-    table { background-color: #161b22; color: #fff; }
-    .table thead th { background-color: #21262d; color: #fff; }
-    .btn-view { background-color: #238636; color: white; }
-    .btn-delete { background-color: #da3633; color: white; }
-    .btn-view:hover, .btn-delete:hover { opacity: 0.8; }
-  </style>
+  <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
-<div class="d-flex">
+<body class="admin-page">
+<div class="d-flex admin-shell">
   <?php include 'sidebar.php'; ?>
 
-  <div class="flex-grow-1 p-4">
-    <h2 class="mb-4"> <i class="bi bi-envelope-fill"></i> Messages Received</h2>
+  <div class="flex-grow-1 p-4" style="max-height:100vh;overflow-y:auto;">
+    <div class="admin-hero text-white p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h2 class="mb-1"><i class="bi bi-envelope-fill me-2"></i>Inbox</h2>
+        <p class="mb-0">Review feedback, questions, and contact submissions in one view.</p>
+      </div>
+      <span class="badge bg-light text-dark px-3 py-2 rounded-pill"><?= $result->num_rows ?> messages</span>
+    </div>
 
     <?php if (isset($_GET['deleted'])): ?>
-      <div class="alert alert-success">Message deleted successfully!</div>
+      <div class="toast admin-toast text-bg-success show mb-3" role="alert">
+        <div class="d-flex">
+          <div class="toast-body"><i class="bi bi-check-circle me-2"></i>Message deleted successfully.</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
     <?php endif; ?>
 
-    <div class="card border-black shadow">
-      <div class="card-body">
+    <div class="admin-card p-3">
         <div class="table-responsive">
           <table class="table table-striped table-hover align-middle">
             <thead>
@@ -70,7 +74,7 @@ $result = $conn->query("SELECT * FROM contact_form ORDER BY submitted_at DESC");
                     <td><?= htmlspecialchars($row['submitted_at']) ?></td>
                     <td>
                       <button 
-                        class="btn btn-sm btn-view" 
+                        class="btn btn-sm btn-outline-success admin-quick-action" 
                         data-bs-toggle="modal" 
                         data-bs-target="#viewModal" 
                         data-name="<?= htmlspecialchars($row['firstname'] . ' ' . $row['lastname']) ?>"
@@ -81,7 +85,7 @@ $result = $conn->query("SELECT * FROM contact_form ORDER BY submitted_at DESC");
                       >View</button>
 
                       <a href="?delete=<?= $row['id'] ?>" 
-                         class="btn btn-sm btn-delete"
+                         class="btn btn-sm btn-outline-danger admin-quick-action"
                          onclick="return confirm('Are you sure you want to delete this message?');">
                          Delete
                       </a>

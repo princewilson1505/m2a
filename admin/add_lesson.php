@@ -32,25 +32,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Add Lesson | M2A Admin</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body class="bg-light">
-  <div class="d-flex">
+<body class="admin-page">
+  <div class="d-flex admin-shell">
     <?php include 'sidebar.php';?>
     
-    <!-- ✅ Make this main content scrollable -->
     <div class="flex-grow-1 p-4" style="max-height: 100vh; overflow-y: auto;">
-      <h2>Add New Lesson</h2>
-      <hr>
-      <form method="POST">
+      <div class="admin-hero text-white p-4 mb-4">
+        <h2 class="fw-bold mb-1">Add New Lesson</h2>
+        <p class="mb-0">Design a structured learning module with multiple sections and code examples.</p>
+      </div>
+      <form method="POST" class="admin-card p-4 admin-form">
         <div class="mb-3">
-          <label class="form-label fw-bold">Title:</label>
-          <input type="text" class="form-control" name="title" placeholder="Enter lesson title" required>
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control admin-pill-input" name="title" placeholder="Enter lesson title" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold">Category:</label>
-          <select class="form-select" name="category" required>
+          <label class="form-label">Category</label>
+          <select class="form-select admin-pill-input" name="category" required>
             <option value="">--Select Category--</option>
             <option value="HTML">HTML</option>
             <option value="CSS">CSS</option>
@@ -60,12 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </select>
         </div>
 
-        <h4>Lesson Sections:</h4>
+        <h4 class="mt-4">Lesson Sections</h4>
         <div id="sections" class="mb-3"></div>
-        <button type="button" class="btn btn-outline-primary mb-3" onclick="addSection()">+ Add Section</button><br>
+        <button type="button" class="btn btn-outline-primary mb-3 admin-quick-action" onclick="addSection()"><i class="bi bi-plus-circle me-1"></i>Add Section</button><br>
 
-        <button type="submit" class="btn btn-success"><i class="bi bi-bookmark"></i> Save</button>
-        <a href="manage_lesson.php" class="btn btn-secondary">Back to Manage</a>
+        <div class="d-flex flex-wrap gap-2">
+          <button type="submit" class="btn admin-gradient-btn"><i class="bi bi-bookmark me-2"></i>Save Lesson</button>
+          <a href="manage_lesson.php" class="btn btn-outline-secondary admin-quick-action">Back to Manage</a>
+        </div>
       </form>
     </div>
   </div>
@@ -74,15 +77,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function addSection() {
       const container = document.getElementById('sections');
       const div = document.createElement('div');
-      div.classList.add('border', 'p-3', 'rounded', 'mb-3', 'bg-white');
+      div.classList.add('border', 'p-3', 'rounded-4', 'mb-3', 'bg-white', 'shadow-sm');
       div.innerHTML = `
         <label class="form-label fw-bold">Section Heading:</label>
-        <input type="text" name="heading[]" class="form-control mb-3" placeholder="Section title">
+        <input type="text" name="heading[]" class="form-control admin-pill-input mb-3" placeholder="Section title">
         <label class="form-label fw-bold">Content:</label>
         <textarea name="content[]" class="form-control mb-3" rows="4" required></textarea>
         <label class="form-label fw-bold">Code Block (optional):</label>
         <textarea name="code_block[]" class="form-control mb-3" rows="4"></textarea>
-        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentElement.remove()">❌ Remove Section</button>
+        <button type="button" class="btn btn-outline-danger btn-sm admin-quick-action" onclick="this.parentElement.remove()"><i class="bi bi-x-circle me-1"></i>Remove Section</button>
       `;
       container.appendChild(div);
     }

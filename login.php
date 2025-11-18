@@ -53,19 +53,27 @@ $_SESSION['toast'] = [
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/icons/font/bootstrap-icons.min.css">
+  <style>
+    .auth-card { border-radius: 24px; overflow: hidden; }
+    .input-pill { border-radius: 999px; padding: 0.65rem 1.1rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.08); }
+    .toast-glow { box-shadow: 0 10px 30px rgba(33, 150, 243, 0.3); }
+  </style>
 </head>
-<body class="bg-primary">
+<body style="background: #1800AD;
+            background: linear-gradient(90deg, rgba(24, 0, 173, 1) 0%,
+             rgba(21, 112, 255, 1) 50%, rgba(92, 225, 232, 1) 100%);">
 
   <section>
-    <div class="container mt-5">
-      <div class="row">
-        <div class="col-8 col-sm-6 col-md-4 m-auto">
-          <div class="card bg-light border border-transparent shadow-lg">
+    <div class="container">
+      <div class="row" style="height:100vh;">
+        <div class="col-10 col-sm-8 col-md-5 col-lg-4 m-auto">
+          <div class="card bg-light border-0 shadow-lg auth-card">
             <div class="card-body p-4">
-              <h2 class="text-center my-3">Login</h2>
-              <p class="text-center text-muted" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">
-                M2a: Programming Languages Learning Guide
-              </p>
+             <div class="mb-4 text-center">
+          <img src="assets/icon.png" alt="logo" height="90" width="auto">
+          <h3 class="mt-3 mb-0">Welcome back</h3>
+          <small class="text-muted">Sign in to continue learning</small>
+        </div>
 
               <?php if (!empty($error)): ?>
                 <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
@@ -76,18 +84,21 @@ $_SESSION['toast'] = [
               <?php endif; ?>
 
               <form action="login.php" method="POST" autocomplete="off">
-                <div class="mb-4 mt-2 mx-5 d-flex align-items-center">
-                  <i class="bi bi-person"></i>
-                  <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                <div class="mb-4 d-flex align-items-center border input-pill">
+                  <i class="bi bi-person text-primary me-2"></i>
+                  <input type="text" class="form-control border-0" id="username" name="username" placeholder="Username"
                          required value="<?= isset($username) ? htmlspecialchars($username) : ''; ?>">
                 </div>
-                <div class="mb-4 mx-5 d-flex align-items-center">
-                  <i class="bi bi-lock"></i>
-                  <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <div class="mb-4 d-flex align-items-center border input-pill">
+                  <i class="bi bi-lock text-primary me-2"></i>
+                  <input type="password" class="form-control border-0" id="password" name="password" placeholder="Password" required>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="togglePasswordBtn">
+                  <i id="togglePassword" class="bi bi-eye-slash"></i>
+                  </button>
                 </div>
 
-                <div class="text-center mx-5">
-                  <button type="submit" class="btn btn-primary  w-100 rounded-pill">LOGIN</button>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary  w-100 rounded-pill py-2">LOGIN</button>
                 </div>
               </form>
 
@@ -102,9 +113,9 @@ $_SESSION['toast'] = [
   </section>
 
   <!-- Toast container -->
-  <div class="toast-container">
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <?php if (!empty($success)): ?>
-      <div class="toast align-items-center text-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="loginToast">
+      <div class="toast toast-glow align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="loginToast">
         <div class="d-flex">
           <div class="toast-body">
             <i class="bi bi-check-circle-fill me-2"></i> <?= htmlspecialchars($success) ?>
@@ -129,7 +140,7 @@ $_SESSION['toast'] = [
   </script>
 <?php if (isset($_SESSION['toast'])): ?>
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-    <div id="liveToast" class="toast align-items-center text-bg-<?= $_SESSION['toast']['type'] ?> border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="liveToast" class="toast toast-glow align-items-center text-bg-<?= $_SESSION['toast']['type'] ?> border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body">
           <?= htmlspecialchars($_SESSION['toast']['message']) ?>
@@ -144,6 +155,18 @@ $_SESSION['toast'] = [
       var toast = new bootstrap.Toast(toastEl);
       toast.show();
     }
+  </script>
+  <script>
+    const togglePassword = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password");
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+
+    toggleBtn.addEventListener("click", function () {
+    const type = password.getAttribute("type") === "password" ? "text" : "password";
+    password.setAttribute("type", type);
+    togglePassword.classList.toggle('bi-eye');
+    togglePassword.classList.toggle('bi-eye-slash');
+    });
   </script>
   <?php unset($_SESSION['toast']); ?>
 <?php endif; ?>

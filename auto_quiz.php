@@ -4,9 +4,13 @@ require_once 'config.php';
 
 // Fetch categories
 $cats = [];
+$categoryMap = [];
 $cRes = $conn->query("SELECT id, name FROM quiz_categories ORDER BY name");
 if ($cRes) {
-    while ($r = $cRes->fetch_assoc()) $cats[] = $r;
+    while ($r = $cRes->fetch_assoc()) {
+        $cats[] = $r;
+        $categoryMap[(int)$r['id']] = $r['name'];
+    }
 }
 
 $error = '';
@@ -22,6 +26,8 @@ if (isset($_GET['new'])) {
     unset($_SESSION['quiz_answers']);
     unset($_SESSION['quiz_metadata']);
     unset($_SESSION['current_feedback']);
+    unset($_SESSION['quiz_run_meta']);
+    unset($_SESSION['quiz_score_saved']);
 }
 
 // Handle form submission (start new quiz or answer question)
@@ -71,6 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ];
                 }
             }
+
+            $_SESSION['quiz_run_meta'] = [
+                'category_id' => $cat ?: null,
+                'category_label' => $cat ? ($categoryMap[$cat] ?? 'Category ' . $cat) : 'Mixed',
+                'question_count' => count($ids)
+            ];
+            $_SESSION['quiz_score_saved'] = false;
             
             // Redirect to display first question
             header('Location: auto_quiz.php');
@@ -196,9 +209,26 @@ if (isset($_SESSION['quiz_ids']) && isset($_SESSION['quiz_index'])) {
               if (strtolower($userAns) === strtolower($correct)) $score++;
             }
           }
+          $percentage = $totalQuestions > 0 ? round(($score / $totalQuestions) * 100, 2) : 0;
+
+          if (!($_SESSION['quiz_score_saved'] ?? false)) {
+              $meta = $_SESSION['quiz_run_meta'] ?? [];
+              $categoryId = isset($meta['category_id']) ? (int)$meta['category_id'] : null;
+              $categoryLabel = $meta['category_label'] ?? ($categoryId && isset($categoryMap[$categoryId]) ? $categoryMap[$categoryId] : 'Mixed');
+              $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+
+              $stmt = $conn->prepare("INSERT INTO quiz_scores (user_id, category_id, category_label, total_questions, correct_answers, percentage) VALUES (?, ?, ?, ?, ?, ?)");
+              if ($stmt) {
+                  $stmt->bind_param('iisiid', $userId, $categoryId, $categoryLabel, $totalQuestions, $score, $percentage);
+                  $stmt->execute();
+                  $stmt->close();
+              }
+
+              $_SESSION['quiz_score_saved'] = true;
+          }
         ?>
         <h1 class="display-4 my-4"><?= $score ?>/<?= $totalQuestions ?></h1>
-        <p class="lead">You scored <?= round(($score/$totalQuestions)*100) ?>%</p>
+        <p class="lead">You scored <?= number_format($percentage, 2) ?>%</p>
         <a href="auto_quiz.php?new=1" class="btn btn-primary mt-3">Take Another Quiz</a>
       </div>
     </div>

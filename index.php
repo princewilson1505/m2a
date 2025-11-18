@@ -13,6 +13,32 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
     
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="assets/icons/font/bootstrap-icons.min.css">
+    <style>
+      .learn-card {
+        border-radius: 18px;
+        overflow: hidden;
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+        position: relative;
+      }
+      .learn-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(circle at top, rgba(255,255,255,0.25), transparent 60%);
+        opacity: 0;
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        pointer-events: none;
+      }
+      .learn-card:hover {
+        transform: translateY(-8px) scale(1.015);
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+      }
+      .learn-card:hover::after {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    </style>
 </head>
 <body>
     <?php include 'nav.php'; ?>
@@ -21,18 +47,26 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
 
       <div id="scrollspyHome">
 
-        <header class="p-4 text-light shadow-sm row g-0 bg-primary bg-gradient">
+        <header class="p-4 row g-0" style="background: #1800AD;
+            background: linear-gradient(90deg, rgba(24, 0, 173, 1) 0%,
+             rgba(21, 112, 255, 1) 50%, rgba(92, 225, 232, 1) 100%);">
             <div class="col-md-8 p-4 container">
-            <h2 class="text-center">M2a: Programming Languages Learning Guide</h2>
-            <p class="text-center fs-6">A Learning Education Coding for Upcoming Programmers/IT Students</p>
+            <div class="my-2" style="display:flex; justify-content:center;">
+            
+              <img src="assets/icon.png" alt="logo" height="120" width="120">
+            
+            </div>
+            <h1 class="text-center text-light" style="text-shadow:0 0 1px #00f, 0 0 3px #00f, 0 0 7px #00f; font-size: 5rem;"><b>M2a</b></h1>
+            <h4 class="text-center text-light">Programming Languages Learning Guide</h4>
+            <p class="text-center text-light fs-6">A Learning Education Coding for Upcoming Programmers/IT Students</p>
             </div>
         </header>
-        <br>
-        <div class="container">
+        <hr class="text-primary">
+        <div class="container my-4">
         <div class="row row-cols-1 row-cols-md-2 g-4">
 
           <div class="col">
-            <div class="card shadow-lg">
+            <div class="card learn-card border border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#F57C00" class="bi bi-code-slash" viewBox="0 0 16 16">
@@ -52,7 +86,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card shadow-lg">
+            <div class="card learn-card border border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#5E35B1" class="bi bi-css" viewBox="0 0 16 16">
@@ -72,7 +106,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card shadow-lg">
+            <div class="card learn-card border border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#FFC400" class="bi bi-javascript" viewBox="0 0 16 16">
@@ -92,7 +126,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card shadow-lg">
+            <div class="card learn-card border border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#01579B" viewBox="0 0 24 24">
@@ -112,7 +146,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card shadow-sm">
+            <div class="card learn-card border border-primary shadow-sm">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <img src="assets/img/Svelte_logo_by_gengns.svg.png" class="img-fluid rounded-start" width="150" height="auto" alt="...">
@@ -132,11 +166,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
 
       
       </div>
-
+<hr class="text-primary">
       <div id="scrollspyContact" data-bs-theme="light" class="container">
         <div class="mt-3 py-5 ">
 
-          <form action="contact.php" method="post" class="row g-3 p-4 border shadow-lg rounded-3 mb-3">
+          <form action="contact.php" method="post" class="row g-3 p-4 border border-primary shadow-lg rounded-3 mb-3">
             <h3 class="mt-2">Contact Us</h3>
             <p class=" mb-2">If you have any questions or feedback, feel free to reach out to us!</p>
               <div class="col-md-6">
@@ -165,7 +199,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
               </div>
 
               <div class="col-md-12">
-                <input type="submit" value="Send" class="btn btn-success text-light mt-3">
+                <input type="submit" value="Send" class="btn btn-primary text-light mt-3">
               </div>
 
           </form>

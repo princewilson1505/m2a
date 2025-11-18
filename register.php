@@ -71,45 +71,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="assets/icons/font/bootstrap-icons.min.css">
+    <style>
+      .auth-card { border-radius: 24px; overflow: hidden; }
+      .input-pill { border-radius: 999px; padding: 0.65rem 1.1rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.08); }
+      .toast-glow { box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3); }
+    </style>
 </head>
-<body class="bg-primary">
+<body style="background: #1800AD;
+            background: linear-gradient(90deg, rgba(24, 0, 173, 1) 0%,
+             rgba(21, 112, 255, 1) 50%, rgba(92, 225, 232, 1) 100%);">
 
 <section>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-8 col-sm-6 col-md-4 m-auto">
-                <div class="card bg-light border border-transparent shadow-lg">
-                    <div class="card-body">
-                        <h2 class="text-center my-3">Register</h2>
-                        <p class="text-center text-muted" style="font-family:'Courier New',Courier,monospace;font-weight:bold;">
-                            M2a: Programming Languages Learning Guide
-                        </p>
+    <div class="container">
+        <div class="row" style="height:100vh;">
+            <div class="col-10 col-sm-8 col-md-5 col-lg-4 m-auto">
+                <div class="card bg-light border-0 shadow-lg auth-card">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-3">
+                            <img src="assets/icon.png" alt="logo" height="60">
+                            <h3 class="mt-3 mb-0">Create account</h3>
+                            <small class="text-muted">Join the M2a learning community</small>
+                        </div>
 
                         <form method="POST" autocomplete="off" enctype="multipart/form-data">
-                            <div class="mb-4 mx-5 d-flex align-items-center">
-                                <i class="bi bi-person me-2"></i>
-                                <input type="text" class="form-control" name="username" placeholder="Username" maxlength="50" required value="<?= htmlspecialchars($username ?? '') ?>">
+                            <div class="mb-4 d-flex align-items-center border input-pill">
+                                <i class="bi bi-person text-primary me-2"></i>
+                                <input type="text" class="form-control border-0" name="username" placeholder="Username" maxlength="50" required value="<?= htmlspecialchars($username ?? '') ?>">
                             </div>
-                            <div class="mb-4 mx-5 d-flex align-items-center">
-                                <i class="bi bi-chat-dots me-2"></i>
-                                <input type="text" class="form-control" name="nickname" placeholder="Nickname (optional)" maxlength="100" value="<?= htmlspecialchars($nickname ?? '') ?>">
+                            <div class="mb-4 d-flex align-items-center border input-pill">
+                                <i class="bi bi-lock text-primary me-2"></i>
+                                <input type="password" class="form-control border-0" name="password" placeholder="Password" required>
                             </div>
-                            <div class="mb-4 mx-5">
-                                <label class="form-label"><i class="bi bi-image"></i> Profile Image (optional)</label>
-                                <input type="file" class="form-control" name="profile_image" accept="image/*">
-                                <small class="text-muted">JPG, PNG, GIF (max 2MB)</small>
-                            </div>
-                            <div class="mb-4 mx-5 d-flex align-items-center">
-                                <i class="bi bi-lock me-2"></i>
-                                <input type="password" class="form-control" name="password" placeholder="Password" required>
-                            </div>
-                            <div class="mb-4 mx-5 d-flex align-items-center">
-                                <i class="bi bi-lock-fill me-2"></i>
-                                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+                            <div class="mb-4 d-flex align-items-center border input-pill">
+                                <i class="bi bi-lock-fill text-primary me-2"></i>
+                                <input type="password" class="form-control border-0" name="confirm_password" placeholder="Confirm Password" required>
                             </div>
 
-                            <div class="text-center mx-5">
-                                <button name="register" class="btn btn-primary w-100 rounded-pill" type="submit">SIGN UP</button>
+                            <div class="text-center">
+                                <button name="register" class="btn btn-primary w-100 rounded-pill py-2" type="submit">SIGN UP</button>
                             </div>
                         </form>
 

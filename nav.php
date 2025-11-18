@@ -25,8 +25,10 @@
 ?>
 <nav id="navbar-example2" class="navbar navbar-expand-lg fixed-top navbar-dark bg-black">
     <div class="container-fluid">
-      <div class="navbar-brand h1 mb-0" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">
-        <i class="bi bi-braces-asterisk"></i>M2a
+      <div class="navbar-brand h1 mb-0" style="font-weight: bold;">
+        <div>
+          <img src="assets/icon.png" alt="logo" height="32" width="32"> M2a
+        </div>
         </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -45,7 +47,8 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="auto_quiz.php">
-              Quizess</a>
+              Quizzes
+            </a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link " href="complier.php" target="_blank" role="button" aria-expanded="false">
@@ -136,55 +139,92 @@
           </div>
         </div>
 
-        <div class="offcanvas offcanvas-end bg-black text-light" tabindex="-1" id="offcanvasRight"  aria-labelledby="offcanvasRightLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasRightLabel">Profile</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body container">
-            <div class="modal-body text-center">
-              <?php if ($currentUser): ?>
-                <!-- Profile Picture -->
-                <?php 
-                  $profileImg = $currentUser['profile_img'] ? htmlspecialchars($currentUser['profile_img']) : 'https://via.placeholder.com/100?text=User';
-                ?>
-                <img src="<?= $profileImg ?>" class="rounded-circle mb-3 border border-light" alt="Profile Picture" style="width: 100px; height: 100px; object-fit: cover;">
-                
-                <!-- Name and Role -->
-                <h5 class="fw-bold mb-1"><?= htmlspecialchars($currentUser['nickname'] ?: $currentUser['username']) ?></h5>
-                <p class="text-info small">@<?= htmlspecialchars($currentUser['username']) ?></p>
-                <p class="text-light"><?= htmlspecialchars(ucfirst($currentUser['role'] ?? 'user')) ?></p>
-
-                <!-- Account Info -->
-                <div class="text-center mx-auto" style="max-width: 300px;">
-                  <p><strong>User ID:</strong> <?= (int)$currentUser['id'] ?></p>
-                </div>
-                
-                <!-- Edit Profile Button -->
-                <a href="profile.php" class="btn container btn-outline-primary mt-2">Edit Profile</a>
-              <?php else: ?>
-                <img src="https://via.placeholder.com/100?text=User" class="rounded-circle mb-3 border" alt="Profile Picture">
-                <h5 class="fw-bold mb-1">Guest</h5>
-                <p class="text-muted">Not signed in</p>
-                <div class="text-start mx-auto" style="max-width: 300px;">
-                  <p><a href="login.php" class="btn btn-sm btn-primary">Sign in</a>
-                  <a href="register.php" class="btn btn-sm btn-outline-light ms-2">Register</a></p>
-                </div>
-              <?php endif; ?>
+        <div class="offcanvas offcanvas-end bg-black text-light" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+          <div class="offcanvas-header border-bottom border-secondary">
+            <div>
+              <h5 class="offcanvas-title mb-0" id="offcanvasRightLabel">Profile Hub</h5>
+              <small class="text-muted">Personalize your learning space</small>
             </div>
-
-        <hr>
-            
-              <link rel="stylesheet" href="css/theme.css">
-
-              <?php include 'toggle-theme.html'; ?>
-
-              <script src="js/theme.js"></script>
-
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
             <?php if ($currentUser): ?>
-              <a type="button" class="btn btn-outline-light container py-1" href="logout.php"><small>Log out</small></a>
+              <?php 
+                $profileImg = $currentUser['profile_img'] ? htmlspecialchars($currentUser['profile_img']) : 'https://via.placeholder.com/140?text=User';
+                $displayName = htmlspecialchars($currentUser['nickname'] ?: $currentUser['username']);
+              ?>
+              <div class="card bg-gradient bg-dark border-0 shadow-sm mb-3">
+                <div class="card-body text-center">
+                  <img src="<?= $profileImg ?>" class="rounded-circle border border-3 border-primary mb-3" alt="Profile Picture" style="width:110px;height:110px;object-fit:cover;">
+                  <h5 class="mb-0"><?= $displayName ?></h5>
+                  <p class="text-info mb-1">@<?= htmlspecialchars($currentUser['username']) ?></p>
+                  <span class="badge bg-primary-subtle text-uppercase text-dark px-3 py-1">
+                    <?= htmlspecialchars($currentUser['role'] ?? 'user') ?>
+                  </span>
+                </div>
+              </div>
+
+              <div class="row g-2 text-center mb-3">
+                <div class="col-4">
+                  <div class="border rounded-3 py-2">
+                    <small class="text-muted d-block">User ID</small>
+                    <span class="fw-bold"><?= (int)$currentUser['id'] ?></span>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="border rounded-3 py-2">
+                    <small class="text-muted d-block">Status</small>
+                    <span class="fw-bold text-success">Active</span>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="border rounded-3 py-2">
+                    <small class="text-muted d-block">Theme</small>
+                    <div class="mb-3">
+                    <link rel="stylesheet" href="css/theme.css">
+                    <?php include 'toggle-theme.html'; ?>
+                    <script src="js/theme.js"></script>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <div class="list-group list-group-flush">
+                  <a href="profile.php" class="list-group-item list-group-item-action bg-transparent text-white d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-person-lines-fill me-2"></i>Edit Profile</span>
+                    <i class="bi bi-chevron-right small"></i>
+                  </a>
+                  <a href="auto_quiz.php" class="list-group-item list-group-item-action bg-transparent text-white d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-lightning-charge me-2"></i>Continue Learning</span>
+                    <i class="bi bi-chevron-right small"></i>
+                  </a>
+                  <a href="category.php?cat=HTML" class="list-group-item list-group-item-action bg-transparent text-white d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-journal-text me-2"></i>Browse Lessons</span>
+                    <i class="bi bi-chevron-right small"></i>
+                  </a>
+                </div>
+              </div>
+
+            <?php else: ?>
+              <div class="text-center mb-4">
+                <img src="https://via.placeholder.com/120?text=Guest" class="rounded-circle border border-secondary mb-3" alt="Guest">
+                <h5>Welcome, Guest!</h5>
+                <p class="text-muted mb-3">Sign in to sync progress, save quizzes, and personalize your experience.</p>
+                <div class="d-flex gap-2 justify-content-center">
+                  <a href="login.php" class="btn btn-primary">Sign in</a>
+                  <a href="register.php" class="btn btn-outline-light">Create account</a>
+                </div>
+              </div>
             <?php endif; ?>
 
+            <hr class="border-secondary">
+
+            <?php if ($currentUser): ?>
+              <a href="logout.php" class="btn btn-outline-light w-100">
+                <i class="bi bi-box-arrow-right me-2"></i>Log out
+              </a>
+            <?php endif; ?>
           </div>
         </div>
 

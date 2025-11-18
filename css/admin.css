@@ -1,0 +1,99 @@
+:root {
+  --admin-bg-start: #0f0c29;
+  --admin-bg-mid: #302b63;
+  --admin-bg-end: #24243e;
+  --admin-card-radius: 22px;
+  --admin-card-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
+  --admin-border: rgba(255, 255, 255, 0.08);
+}
+
+body.admin-page {
+  min-height: 100vh;
+  background: #1800AD;
+  background: linear-gradient(90deg, rgba(24, 0, 173, 1) 0%, rgba(21, 112, 255, 1) 50%, rgba(92, 225, 232, 1) 100%);
+}
+
+.admin-hero {
+  background: linear-gradient(125deg, #1d2671 0%, #c33764 100%);
+  border-radius: 32px;
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.3), transparent 60%);
+  pointer-events: none;
+}
+
+.admin-card {
+  border: none !important;
+  border-radius: var(--admin-card-radius);
+  box-shadow: var(--admin-card-shadow);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.admin-card.dark {
+  background: rgba(16, 16, 35, 0.9);
+  color: #fff;
+}
+
+.admin-card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.admin-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 48px rgba(0, 0, 0, 0.25);
+}
+
+.admin-quick-action {
+  border-radius: 999px;
+  border: 1px solid var(--admin-border);
+}
+
+.admin-table {
+  border-radius: var(--admin-card-radius);
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--admin-card-shadow);
+}
+
+.admin-table thead {
+  background: rgba(13, 110, 253, 0.08);
+}
+
+.admin-toast {
+  box-shadow: 0 16px 36px rgba(13, 110, 253, 0.4);
+  border-radius: 14px;
+}
+
+.admin-form label {
+  font-weight: 600;
+  color: #444;
+}
+
+.admin-pill-input {
+  border-radius: 999px;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid #d7d7e2;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.admin-gradient-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(120deg, #1d976c, #93f9b9);
+  color: #111;
+  font-weight: 600;
+  transition: opacity 0.25s ease;
+}
+
+.admin-gradient-btn:hover {
+  opacity: 0.9;
+}
+

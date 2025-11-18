@@ -18,29 +18,30 @@ $result = $conn->query("SELECT * FROM lessons");
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Content | M2A Admin</title>
+  <title>Manage Lessons | M2A Admin</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/icons/font/bootstrap-icons.min.css">
-  <style>
-    /* Toast container position */
-    .toast-container {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 9999;
-    }
-  </style>
+  <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
-  <div class="d-flex">
+<body class="admin-page">
+  <div class="d-flex admin-shell">
     <?php include 'sidebar.php'; ?>
-    <div class="p-4 flex-grow-1">
-      <h3>Content Panel</h3>
-    <hr>
-    <a class="btn btn-success text-light mb-2" href="add_lesson.php">Add Lesson</a>
-    <div class="card rounded shadow">
-      <table class="table table-striped mb-0 overflow-auto">
-        <thead class="table-dark">
+    <div class="p-4 flex-grow-1" style="max-height:100vh;overflow-y:auto;">
+      <div class="admin-hero text-white p-4 mb-4">
+        <div class="d-flex justify-content-between flex-wrap gap-3 align-items-center">
+          <div>
+            <h2 class="fw-bold mb-1">Lesson Management</h2>
+            <p class="mb-0">Create, edit, and curate every lesson that appears in the catalog.</p>
+          </div>
+          <a class="btn btn-light admin-quick-action" href="add_lesson.php">
+            <i class="bi bi-plus-circle me-2"></i> Add Lesson
+          </a>
+        </div>
+      </div>
+
+      <div class="admin-card admin-card-hover p-3">
+      <table class="table table-hover mb-0">
+        <thead>
           <tr>
             <th>ID</th>
             <th>Title</th>
@@ -70,7 +71,7 @@ $result = $conn->query("SELECT * FROM lessons");
           <?php endwhile; ?>
         </tbody>
       </table>
-  </div>
+      </div>
     </div>
     </div>
   <!-- Delete Confirmation Modal -->
@@ -94,8 +95,8 @@ $result = $conn->query("SELECT * FROM lessons");
   </div>
 
   <!-- Toast Notifications -->
-  <div class="toast-container">
-    <div id="addToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="addToast" class="toast admin-toast text-bg-success border-0" role="alert">
       <div class="d-flex">
         <div class="toast-body">
           <i class="bi bi-check-circle-fill"></i> Lesson added successfully!
@@ -103,8 +104,7 @@ $result = $conn->query("SELECT * FROM lessons");
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
-
-    <div id="deleteToast" class="toast align-items-center text-white bg-danger border-0" role="alert">
+    <div id="deleteToast" class="toast admin-toast text-bg-danger border-0" role="alert">
       <div class="d-flex">
         <div class="toast-body">
           <i class="bi bi-trash3-fill"></i> Lesson deleted successfully!
