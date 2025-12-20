@@ -159,11 +159,16 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
           <ul class="list-unstyled mx-2">
              <?php while ($row = $result->fetch_assoc()): ?>
                <?php $isActive = ($row['id'] == $id); ?> 
-               <li class="mb-1"> <a href="lesson.php?id=<?= $row['id'] ?>" class="btn btn-sm <?= $isActive ? 'btn-primary' : 'btn-outline-light' ?> w-100 text-start" aria-current="<?= $isActive ? 'page' : 'false' ?>"> <?= htmlspecialchars($row['title']) ?> 
-              </a> </li> <?php endwhile; ?> 
-            </ul> <?php else: ?> 
+               <li class="mb-1"> 
+                 <a href="lesson.php?id=<?= $row['id'] ?>" class="btn btn-sm <?= $isActive ? 'btn-primary' : 'btn-outline-light' ?> w-100 text-start" aria-current="<?= $isActive ? 'page' : 'false' ?>"> 
+                   <?= htmlspecialchars($row['title']) ?> 
+                 </a> 
+               </li> 
+             <?php endwhile; ?> 
+            </ul> 
+        <?php else: ?> 
               <p>No lessons available for this category yet.</p>
-               <?php endif; ?>
+        <?php endif; ?>
       </div>
 
       <!-- Lesson Content -->
@@ -178,17 +183,19 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
             <p><?= $s['content'] ?></p>
 
             <?php if (!empty($s['code_block'])): ?>
-            <div class="card mb-3">
+            <div class="card border-3 border-primary mb-3">
               <div class="card-header"><?= htmlspecialchars($lesson['category']) ?></div>
               <div class="card-body">
-                <pre><code id="codeblock-<?= $s['id'] ?>" class="language-<?= strtolower($lesson['category']) ?> language-php"><?= htmlspecialchars($s['code_block']) ?></code></pre>
+                <pre><code id="codeblock-<?= $s['id'] ?>" class="language-<?= strtolower($lesson['category']) ?>"><?= htmlspecialchars($s['code_block']) ?></code></pre>
                 <div style="display:flex; gap:8px; margin-top:6px;">
                   <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyCode(<?= $s['id'] ?>, this)">Copy</button>
                   <?php if (in_array($lesson['category'], ['HTML','CSS','JavaScript', 'PHP'])): ?>
                     <button type="button" class="btn btn-sm btn-outline-primary" onclick="runCode(<?= $s['id'] ?>)">Run</button>
                   <?php endif; ?>
                 </div>
-                <iframe class="bg-white" id="output<?= $s['id'] ?>"></iframe>
+                <?php if (!in_array($lesson['category'], ['Svelte'])): ?>
+                  <iframe class="bg-white" id="output<?= $s['id'] ?>"></iframe>
+                <?php endif; ?>
               </div>
             </div>
             <?php endif; ?>
@@ -223,121 +230,119 @@ $prevLesson = $prevStmt->get_result()->fetch_assoc();
   <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-php.min.js"></script>
 
   <script>
-  // Sidebar toggle for mobile
-  function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const isOpen = sidebar.style.display === 'block';
-    sidebar.style.display = isOpen ? 'none' : 'block';
-    overlay.style.display = isOpen ? 'none' : 'block';
-  }
-
-  // -------------------------
-  // ✅ FIXED RUN CODE FUNCTION
-  // -------------------------
-  function runCode(id) {
-    const codeEl = document.getElementById('codeblock-' + id);
-    const iframe = document.getElementById('output' + id);
-    const code = codeEl.textContent.trim();
-
-    const type = codeEl.className
-      .replace("language-", "")
-      .split(" ")[0]
-      .trim()
-      .toLowerCase();
-
-    if (type === "html") {
-      iframe.srcdoc = code;
-      return;
+    // Sidebar toggle for mobile
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const isOpen = sidebar.style.display === 'block';
+      sidebar.style.display = isOpen ? 'none' : 'block';
+      overlay.style.display = isOpen ? 'none' : 'block';
     }
 
-    if (type === "css") {
-      iframe.srcdoc = `<style>${code}</style>`;
-      return;
-    }
+    // Run code function
+    function runCode(id) {
+      const codeEl = document.getElementById('codeblock-' + id);
+      if (!codeEl) return;
 
-    if (type === "javascript" || type === "js") {
-      iframe.srcdoc = `
-        <html>
-        <body></body>
-        <script>
-          try { ${code} }
-          catch(e){ document.body.innerHTML = "<pre style='color:red;'>" + e + "</pre>"; }
-        <\/script>
-         <pre id="console" style="background:#000;color:#0f0;padding:10px;"></pre>
-        <script>
-        const log = (...msg) => {
-          document.getElementById("console").innerHTML += msg.join(" ") + "\\n";
+      const code = codeEl.textContent.trim();
+      const type = codeEl.className
+        .replace("language-", "")
+        .split(" ")[0]
+        .trim()
+        .toLowerCase();
+
+      const iframe = document.getElementById('output' + id);
+      if (!iframe) return; // disables for Svelte
+
+      if (type === "html") {
+        iframe.srcdoc = code;
+        return;
+      }
+
+      if (type === "css") {
+        iframe.srcdoc = `<html><head><style>${code}</style></head><body></body></html>`;
+        return;
+      }
+
+      if (type === "javascript" || type === "js") {
+        iframe.srcdoc = `
+          <html>
+            <body>
+              <pre id="console" style="background:#000;color:#0f0;padding:10px;"></pre>
+              <script>
+                (function() {
+                  const log = (...msg) => {
+                    document.getElementById("console").textContent += msg.join(" ") + "\\n";
+                  };
+                  console.log = log;
+                  try {
+                    ${code}
+                  } catch(e) {
+                    log("Error:", e);
+                  }
+                })();
+              <\/script>
+            </body>
+          </html>
+        `;
+        return;
+      }
+
+      if (type === "php") {
+        iframe.src = 'about:blank';
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'run_php.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+          iframe.srcdoc = `<pre style="padding:10px;">${this.responseText}</pre>`;
         };
-        console.log = log;
-        
-        try {
-          ${code}
-        } catch(e){
-          log("Error:", e);
-        }
-      <\/script>
-        </html>
-      `;
-      return;
+        xhr.send("code=" + encodeURIComponent(code));
+        return;
+      }
     }
 
-    if (type === "php") {
-      iframe.src = 'about:blank';
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'run_php.php', true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.onload = function () {
-        iframe.srcdoc = `<pre style="padding:10px;">${this.responseText}</pre>`;
-      };
-      xhr.send("code=" + encodeURIComponent(code));
+    // Copy code
+    function copyCode(id, btn) {
+      const codeEl = document.getElementById('codeblock-' + id);
+      if (!codeEl) return;
+      navigator.clipboard.writeText(codeEl.textContent).then(() => {
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = original, 1200);
+      }).catch(() => {
+        btn.textContent = 'Failed';
+        setTimeout(() => btn.textContent = 'Copy', 1200);
+      });
     }
-  }
 
-  // Copy code
-  function copyCode(id, btn) {
-    const codeEl = document.getElementById('codeblock-' + id);
-    if (!codeEl) return;
-    navigator.clipboard.writeText(codeEl.textContent).then(() => {
-      const original = btn.textContent;
-      btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = original, 1200);
-    }).catch(() => {
-      btn.textContent = 'Failed';
-      setTimeout(() => btn.textContent = 'Copy', 1200);
-    });
-  }
-  </script>
-
-  <script>
-  // Scroll to hash
-  document.addEventListener('DOMContentLoaded', function () {
-    try {
-      if (window.location.hash) {
-        var targetId = window.location.hash.substring(1);
-        var el = document.getElementById(targetId);
-        if (el) {
-          var navbar = document.querySelector('nav.navbar');
-          var navbarHeight = navbar ? navbar.offsetHeight : 60;
-          
-          var container = document.querySelector('.col-lg-8.offset-lg-1') || document.querySelector('.content-area') || window;
-          if (container && container !== window) {
-            setTimeout(function() {
-              var top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - navbarHeight - 20;
-              container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-            }, 50);
-          } else {
-            setTimeout(function() {
-              var top = el.getBoundingClientRect().top + window.scrollY - navbarHeight - 20;
-              window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-            }, 50);
+    // Scroll to hash
+    document.addEventListener('DOMContentLoaded', function () {
+      try {
+        if (window.location.hash) {
+          var targetId = window.location.hash.substring(1);
+          var el = document.getElementById(targetId);
+          if (el) {
+            var navbar = document.querySelector('nav.navbar');
+            var navbarHeight = navbar ? navbar.offsetHeight : 60;
+            
+            var container = document.querySelector('.col-lg-8.offset-lg-1') || document.querySelector('.content-area') || window;
+            if (container && container !== window) {
+              setTimeout(function() {
+                var top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - navbarHeight - 20;
+                container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+              }, 50);
+            } else {
+              setTimeout(function() {
+                var top = el.getBoundingClientRect().top + window.scrollY - navbarHeight - 20;
+                window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+              }, 50);
+            }
           }
         }
+      } catch (e) {
+        console.error('Scroll to hash failed', e);
       }
-    } catch (e) {
-      console.error('Scroll to hash failed', e);
-    }
-  });
+    });
   </script>
 </body>
 </html>

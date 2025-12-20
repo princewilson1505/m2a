@@ -33,14 +33,15 @@ $showCompilerAlert = !file_exists($localCompiler);
             .console-output { width: 100%; height: 100px; background: #1e1e1e; color: #fff; padding: 10px; font-family: monospace; overflow-y: auto; border: 1px solid #ced4da; }
             .greeting { padding: 1em; text-align: center; }
         </style>
-    </head>
-    <body>
+        </head>
+        <body style="background: #1800AD;
+            background: linear-gradient(90deg, rgba(24, 0, 173, 1) 0%,
+             rgba(21, 112, 255, 1) 50%, rgba(92, 225, 232, 1) 100%);">
         <div class="title container">
-            <h1 class="p-2" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">M2a Compiler</h1>
+        <h1 class="p-2 text-light" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">M2a Compiler</h1>
         </div>
-
         <div class="card container-fluid shadow-lg bg-light p-4">
-            <?php if (!empty($showCompilerAlert)): ?>
+        <?php if (!empty($showCompilerAlert)): ?>
                 <div class="alert alert-warning" role="alert">
                     <h5 class="alert-heading">Svelte compiler not found locally</h5>
                     <p>The in-browser Svelte compiler is not available as a local file. Edge's Tracking Prevention may block loading the compiler from third-party CDNs. To ensure Svelte runs reliably in this editor, download the compiler to <code>/assets/svelte/compiler.js</code>.</p>
@@ -48,24 +49,23 @@ $showCompilerAlert = !file_exists($localCompiler);
                     <p class="mb-0"><strong>Quick PowerShell command (run in project root):</strong></p>
                     <pre class="small">New-Item -ItemType Directory -Force -Path .\assets\svelte\; Invoke-WebRequest 'https://cdn.jsdelivr.net/npm/svelte@4/compiler.js' -OutFile .\assets\svelte\compiler.js</pre>
                 </div>
-            <?php endif; ?>
-            <div class="row mb-3">
+        <?php endif; ?>
+        <div class="row mb-3">
                 <div class="col">Select Your Language:</div>
                     <select class="form-select" id="languageSelect" onchange="changeLanguage()">
-                        <option value="html">HTML</option>
-                        <option value="css">CSS</option>
-                        <option value="javascript">JavaScript</option>
-                        <option value="php">PHP</option>
-                        <!--<option value="svelte">Svelte</option>-->
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="php">PHP</option>
+                    <!--<option value="svelte">Svelte</option>-->
                     </select>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-primary" onclick="runCode()">
-                        Run <i class="bi bi-play-fill"></i>
-                    </button>
-                </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" onclick="runCode()">
+                Run <i class="bi bi-play-fill"></i>
+                </button>
             </div>
-
+        </div>
             <div class="row align-items-center m-5 border rounded p-3 bg-dark">
                 <div class="col-md-6">
                     <h4 class="mb-3 text-light">Input:</h4>
@@ -74,9 +74,9 @@ $showCompilerAlert = !file_exists($localCompiler);
                 <div class="col-md-6">
                     <h4 class="mb-3 text-light">Output:</h4>
                     <div class="output-container">
-                        <iframe id="output" class="output-frame"></iframe>
+                    <iframe id="output" class="output-frame"></iframe>
                     <h5 class="mb-2 text-light">Console:</h5>
-                        <div id="console" class="console-output"></div>
+                    <div id="console" class="console-output"></div>
                     </div>
                 </div>
             </div>

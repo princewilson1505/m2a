@@ -40,6 +40,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
       }
     </style>
 </head>
+
 <body>
     <?php include 'nav.php'; ?>
 <main role="main" class="pt-5">
@@ -66,7 +67,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
         <div class="row row-cols-1 row-cols-md-2 g-4">
 
           <div class="col">
-            <div class="card learn-card border border-primary shadow-lg">
+            <div class="card learn-card border-2 border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#F57C00" class="bi bi-code-slash" viewBox="0 0 16 16">
@@ -86,7 +87,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card learn-card border border-primary shadow-lg">
+            <div class="card learn-card border-2 border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#5E35B1" class="bi bi-css" viewBox="0 0 16 16">
@@ -106,7 +107,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card learn-card border border-primary shadow-lg">
+            <div class="card learn-card border-2 border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#FFC400" class="bi bi-javascript" viewBox="0 0 16 16">
@@ -126,7 +127,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
           </div>
 
           <div class="col">
-            <div class="card learn-card border border-primary shadow-lg">
+            <div class="card learn-card border-2 border-primary shadow-lg">
               <div class="row g-0">
                 <div class="col-md-4 ps-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="150" height="auto" fill="#01579B" viewBox="0 0 24 24">
@@ -221,5 +222,19 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
     </div>
 </div>
   <script src="js/bootstrap.bundle.min.js"></script>
+<?php if (isset($_SESSION['toast'])): ?>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast text-bg-<?php echo $_SESSION['toast']['type']; ?> show align-items-center border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                <?php echo $_SESSION['toast']['message']; ?>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<?php unset($_SESSION['toast']); ?>
+<?php endif; ?>
 </body>
 </html>

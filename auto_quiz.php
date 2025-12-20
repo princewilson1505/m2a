@@ -167,7 +167,7 @@ if (isset($_SESSION['quiz_ids']) && isset($_SESSION['quiz_index'])) {
 <body>
 <?php include 'nav.php'; ?>
 <main class="container mt-4">
-  <h2 class="mb-4">Auto-generated Quiz</h2>
+  <h2 class="mb-4">Quiz</h2>
 
   <?php if ($error): ?>
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>

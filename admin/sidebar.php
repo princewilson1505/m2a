@@ -10,8 +10,8 @@ $menu_groups = [
 ?>
 
 <div class="d-flex sticky flex-column flex-shrink-0 p-3 bg-black text-white" style="width: 250px; height: 100vh;">
-  <h4 class="text-light" style="font-family: 'Courier New', Courier, monospace; font-weight: bold;">
-    <i class="bi bi-braces-asterisk"></i> M2a Admin
+  <h4 class="text-light ms-2" style="font-weight: bold;">
+    <img src="../assets/icon.png" alt="logo" height="30" width="30"> Admin
   </h4>
   <hr>
 

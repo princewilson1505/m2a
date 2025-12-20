@@ -45,12 +45,12 @@
               Contact
             </a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="auto_quiz.php">
+          <li class="nav-item">
+            <a class="nav-link" href="auto_quiz.php">
               Quizzes
             </a>
           </li>
-          <li class="nav-item dropdown">
+          <li class="nav-item">
             <a class="nav-link " href="complier.php" target="_blank" role="button" aria-expanded="false">
               Compiler
             </a>
@@ -166,20 +166,20 @@
 
               <div class="row g-2 text-center mb-3">
                 <div class="col-4">
-                  <div class="border rounded-3 py-2">
-                    <small class="text-muted d-block">User ID</small>
+                  <div class="border bg-dark rounded-3 py-2">
+                    <small class="d-block">User ID</small>
                     <span class="fw-bold"><?= (int)$currentUser['id'] ?></span>
                   </div>
                 </div>
                 <div class="col-4">
-                  <div class="border rounded-3 py-2">
-                    <small class="text-muted d-block">Status</small>
+                  <div class="border bg-dark rounded-3 py-2">
+                    <small class="d-block">Status</small>
                     <span class="fw-bold text-success">Active</span>
                   </div>
                 </div>
                 <div class="col-4">
-                  <div class="border rounded-3 py-2">
-                    <small class="text-muted d-block">Theme</small>
+                  <div class="border bg-dark rounded-3 py-2">
+                    <small class="d-block">Theme</small>
                     <div class="mb-3">
                     <link rel="stylesheet" href="css/theme.css">
                     <?php include 'toggle-theme.html'; ?>

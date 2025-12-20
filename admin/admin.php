@@ -70,7 +70,7 @@ while ($row = $quizResult->fetch_assoc()) {
       min-height: 100vh;
     }
     .admin-hero {
-      background: linear-gradient(120deg, #1d2671 0%, #c33764 100%);
+      background: linear-gradient(125deg, #000 0%, #3533cd 100%);
       border-radius: 30px;
       box-shadow: 0 20px 45px rgba(0,0,0,0.25);
       position: relative;

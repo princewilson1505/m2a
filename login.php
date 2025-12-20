@@ -71,8 +71,8 @@ $_SESSION['toast'] = [
             <div class="card-body p-4">
              <div class="mb-4 text-center">
           <img src="assets/icon.png" alt="logo" height="90" width="auto">
-          <h3 class="mt-3 mb-0">Welcome back</h3>
-          <small class="text-muted">Sign in to continue learning</small>
+          <h3 class="mt-3 mb-0">Programming Language Learning Guide</h3>
+          <small class="text-muted">Sign in</small>
         </div>
 
               <?php if (!empty($error)): ?>
